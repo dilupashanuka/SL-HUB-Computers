@@ -1,10 +1,12 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { revalidatePath } from 'next/cache';
 
 export async function uploadHeroSlides(formData: FormData) {
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
   const images = formData.getAll('images') as File[];
 
   for (const image of images) {
@@ -14,7 +16,7 @@ export async function uploadHeroSlides(formData: FormData) {
     const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `hero-slides/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabaseAdmin.storage
       .from('hero')
       .upload(filePath, image);
 
@@ -23,7 +25,7 @@ export async function uploadHeroSlides(formData: FormData) {
       continue;
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from('hero')
       .getPublicUrl(filePath);
 
@@ -43,6 +45,7 @@ export async function uploadHeroSlides(formData: FormData) {
 
 export async function deleteHeroSlide(formData: FormData) {
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
   const id = formData.get('id') as string;
   const imageUrl = formData.get('imageUrl') as string;
 
@@ -60,7 +63,7 @@ export async function deleteHeroSlide(formData: FormData) {
   if (imageUrl) {
     const path = imageUrl.split('/').pop();
     if (path) {
-      await supabase.storage
+      await supabaseAdmin.storage
         .from('hero')
         .remove([`hero-slides/${path}`]);
     }

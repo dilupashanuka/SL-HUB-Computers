@@ -1,11 +1,13 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function createProduct(formData: FormData) {
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
 
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
@@ -23,7 +25,7 @@ export async function createProduct(formData: FormData) {
     const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `product-images/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabaseAdmin.storage
       .from('products')
       .upload(filePath, image);
 
@@ -32,7 +34,7 @@ export async function createProduct(formData: FormData) {
       continue;
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from('products')
       .getPublicUrl(filePath);
 
@@ -64,6 +66,7 @@ export async function createProduct(formData: FormData) {
 
 export async function updateProduct(formData: FormData) {
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
@@ -82,7 +85,7 @@ export async function updateProduct(formData: FormData) {
     const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `product-images/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabaseAdmin.storage
       .from('products')
       .upload(filePath, image);
 
@@ -91,7 +94,7 @@ export async function updateProduct(formData: FormData) {
       continue;
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from('products')
       .getPublicUrl(filePath);
 
