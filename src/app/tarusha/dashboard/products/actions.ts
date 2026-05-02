@@ -56,8 +56,7 @@ export async function createProduct(formData: FormData) {
     ]);
 
   if (error) {
-    console.error('Error creating product:', error);
-    return { error: error.message };
+    throw new Error(error.message);
   }
 
   revalidatePath('/tarusha/dashboard/products');
@@ -115,8 +114,7 @@ export async function updateProduct(formData: FormData) {
     .eq('id', id);
 
   if (error) {
-    console.error('Error updating product:', error);
-    return { error: error.message };
+    throw new Error(error.message);
   }
 
   revalidatePath('/tarusha/dashboard/products');

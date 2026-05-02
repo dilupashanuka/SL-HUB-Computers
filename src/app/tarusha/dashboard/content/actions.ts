@@ -12,8 +12,7 @@ export async function updateSiteContent(formData: FormData) {
   try {
     content = JSON.parse(contentStr);
   } catch (e) {
-    console.error('Invalid JSON content:', e);
-    return { error: 'Invalid content format' };
+    throw new Error('Invalid content format');
   }
 
   const { error } = await supabase
@@ -21,11 +20,9 @@ export async function updateSiteContent(formData: FormData) {
     .upsert({ page_slug, content, updated_at: new Date().toISOString() }, { onConflict: 'page_slug' });
 
   if (error) {
-    console.error('Error updating site content:', error);
-    return { error: error.message };
+    throw new Error(error.message);
   }
 
   revalidatePath('/tarusha/dashboard/content');
   revalidatePath(`/${page_slug === 'home' ? '' : page_slug}`);
-  return { success: true };
 }
