@@ -146,7 +146,6 @@ async function setupDatabase() {
         END LOOP;
       END $$;
 
-      -- Create storage buckets if not exists
       INSERT INTO storage.buckets (id, name, public) 
       VALUES ('products', 'products', true)
       ON CONFLICT (id) DO NOTHING;
@@ -154,6 +153,22 @@ async function setupDatabase() {
       INSERT INTO storage.buckets (id, name, public) 
       VALUES ('hero', 'hero', true)
       ON CONFLICT (id) DO NOTHING;
+
+      -- Set up Storage Policies
+      -- Allow public access to all objects
+      CREATE POLICY "Public Read" ON storage.objects FOR SELECT USING (true);
+      
+      -- Allow authenticated users to upload to products bucket
+      CREATE POLICY "Admin Upload Products" ON storage.objects FOR INSERT 
+      WITH CHECK (bucket_id = 'products' AND auth.role() = 'authenticated');
+      
+      -- Allow authenticated users to upload to hero bucket
+      CREATE POLICY "Admin Upload Hero" ON storage.objects FOR INSERT 
+      WITH CHECK (bucket_id = 'hero' AND auth.role() = 'authenticated');
+
+      -- Allow authenticated users to delete
+      CREATE POLICY "Admin Delete Objects" ON storage.objects FOR DELETE 
+      USING (auth.role() = 'authenticated');
     `;
 
     await client.query(createTablesQuery);

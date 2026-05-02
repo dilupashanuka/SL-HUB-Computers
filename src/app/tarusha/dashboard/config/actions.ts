@@ -43,7 +43,6 @@ export async function updateSiteConfig(formData: FormData) {
   revalidatePath('/');
   revalidatePath('/contact');
   revalidatePath('/tarusha/dashboard/config');
-  return { success: true };
 }
 
 export async function updatePassword(formData: FormData) {
@@ -58,8 +57,6 @@ export async function updatePassword(formData: FormData) {
   const { error } = await supabase.auth.updateUser({ password });
 
   if (error) {
-    return { error: error.message };
+    throw new Error(error.message);
   }
-
-  return { success: true };
 }
