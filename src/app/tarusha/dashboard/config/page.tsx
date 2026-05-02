@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getSiteConfig, updateSiteConfig, updatePassword } from './actions';
-import { Youtube, Phone, Share2, Mail, ShieldCheck } from 'lucide-react';
+import { Phone, Share2, Mail, ShieldCheck } from 'lucide-react';
 
 export default async function SiteConfigPage() {
   const config = await getSiteConfig();
