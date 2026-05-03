@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash2, Layout, Upload, Save } from 'lucide-react';
 import Image from 'next/image';
-import { uploadHeroSlides, deleteHeroSlide, updateHeroSlide } from './actions';
+import { deleteHeroSlide, updateHeroSlide } from './actions';
+import { HeroUploadForm } from './HeroUploadForm';
 
 export default async function HeroShowcasePage() {
   const supabase = await createClient();
@@ -28,23 +29,7 @@ export default async function HeroShowcasePage() {
             <CardDescription className="text-slate-500">Upload multiple images for the home slider.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={uploadHeroSlides} className="space-y-4">
-              <div className="aspect-video rounded-xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center text-slate-500 hover:border-blue-500/50 hover:text-blue-400 transition-all cursor-pointer bg-white/5 relative">
-                <input 
-                  type="file" 
-                  name="images" 
-                  multiple 
-                  className="absolute inset-0 opacity-0 cursor-pointer" 
-                  accept="image/*"
-                  required
-                />
-                <Plus className="w-8 h-8 mb-2" />
-                <span className="text-xs font-bold uppercase tracking-widest text-center px-4">Click to select slider images</span>
-              </div>
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold h-12 rounded-xl">
-                Add to Showcase
-              </Button>
-            </form>
+            <HeroUploadForm />
           </CardContent>
         </Card>
 
@@ -58,6 +43,7 @@ export default async function HeroShowcasePage() {
                     src={slide.image_url} 
                     alt="Hero Slide" 
                     fill 
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -82,11 +68,12 @@ export default async function HeroShowcasePage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sub Heading</Label>
+                      <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Video URL (Optional)</Label>
                       <Input 
-                        name="subtitle" 
-                        defaultValue={slide.subtitle} 
-                        className="bg-white/5 border-white/10 text-slate-400 h-10" 
+                        name="video_url" 
+                        defaultValue={slide.video_url} 
+                        placeholder="Direct link to mp4 file"
+                        className="bg-white/5 border-white/10 text-blue-400 h-10 font-mono text-xs" 
                       />
                     </div>
                     <Button type="submit" variant="outline" className="w-full border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-white/5">

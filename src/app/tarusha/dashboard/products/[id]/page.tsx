@@ -78,16 +78,23 @@ export default async function EditProductPage({ params }: { params: { id: string
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="category" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Category</Label>
+                    <Label htmlFor="category_id" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Category</Label>
                     <select 
-                      id="category" 
-                      name="category" 
-                      defaultValue={product.category}
+                      id="category_id" 
+                      name="category_id" 
+                      defaultValue={product.category_id || ''}
                       className="w-full bg-white/5 border border-white/10 text-white h-12 rounded-lg px-4 focus:outline-none focus:border-blue-500/50 appearance-none"
                       required
                     >
-                      {categories?.map(cat => (
-                        <option key={cat.id} value={cat.slug} className="bg-slate-900">{cat.name}</option>
+                      {categories?.filter(c => !c.parent_id).map(parent => (
+                        <>
+                          <option key={parent.id} value={parent.id} className="bg-slate-900 font-bold">{parent.name}</option>
+                          {categories?.filter(c => c.parent_id === parent.id).map(child => (
+                            <option key={child.id} value={child.id} className="bg-slate-900 pl-4 text-slate-400">
+                               &nbsp;&nbsp;&nbsp;↳ {child.name}
+                            </option>
+                          ))}
+                        </>
                       ))}
                     </select>
                   </div>
@@ -116,7 +123,7 @@ export default async function EditProductPage({ params }: { params: { id: string
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   {product.images?.map((url: string, i: number) => (
                     <div key={i} className="aspect-square rounded-xl overflow-hidden bg-white/5 border border-white/5 relative group">
-                      <Image src={url} alt={`Product ${i}`} fill className="object-cover" />
+                      <Image src={url} alt={`Product ${i}`} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <span className="text-[10px] font-black text-white uppercase">Active Image</span>
                       </div>

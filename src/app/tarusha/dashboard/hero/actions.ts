@@ -78,10 +78,11 @@ export async function updateHeroSlide(formData: FormData) {
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
   const subtitle = formData.get('subtitle') as string;
+  const video_url = formData.get('video_url') as string;
 
   const { error } = await supabase
     .from('hero_slides')
-    .update({ title, subtitle })
+    .update({ title, subtitle, video_url })
     .eq('id', id);
 
   if (error) {

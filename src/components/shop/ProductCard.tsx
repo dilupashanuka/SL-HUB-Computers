@@ -3,10 +3,11 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
-import { ShoppingCart, Eye, Heart, Share2, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Eye, Heart, Share2, MessageCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { QuickView } from './QuickView';
 
 interface Product {
   id: string;
@@ -30,6 +31,7 @@ export function ProductCard({ product }: { product: Product }) {
             src={product.image_url} 
             alt={product.title} 
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
         ) : (
@@ -47,9 +49,11 @@ export function ProductCard({ product }: { product: Product }) {
           >
             <MessageCircle className="w-6 h-6" />
           </Link>
-          <button className="w-12 h-12 bg-white/10 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-transform">
-            <Eye className="w-6 h-6" />
-          </button>
+          <QuickView product={product}>
+            <button className="w-12 h-12 bg-white/10 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-transform">
+              <Eye className="w-6 h-6" />
+            </button>
+          </QuickView>
         </div>
 
         {/* Stock Badge */}

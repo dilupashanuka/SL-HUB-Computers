@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, ShoppingBag, Wrench, Info, MessageSquare, User } from 'lucide-react';
@@ -13,11 +14,34 @@ const MOBILE_LINKS = [
   { href: "/tarusha", label: "Admin", icon: User },
 ];
 
-export function MobileBottomNav() {
+export function MobileBottomNav({ settings }: { settings?: any }) {
   const pathname = usePathname();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        if (window.scrollY > lastScrollY && window.scrollY > 100) { // scrolling down
+          setIsVisible(false);
+        } else { // scrolling up
+          setIsVisible(true);
+        }
+        setLastScrollY(window.scrollY);
+      }
+    };
+
+    window.addEventListener('scroll', controlNavbar);
+    return () => {
+      window.removeEventListener('scroll', controlNavbar);
+    };
+  }, [lastScrollY]);
 
   return (
-    <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md">
+    <div className={cn(
+      "md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[400] w-[90%] max-w-md transition-all duration-500 ease-in-out",
+      isVisible ? "translate-y-0 opacity-100" : "translate-y-20 opacity-0 pointer-events-none"
+    )}>
       <div className="glass rounded-full px-6 py-3 border border-white/10 shadow-2xl flex items-center justify-between">
         {MOBILE_LINKS.map((link) => {
           const Icon = link.icon;

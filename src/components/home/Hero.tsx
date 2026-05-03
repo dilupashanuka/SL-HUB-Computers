@@ -58,68 +58,66 @@ export function Hero({ slides = [] }: HeroProps) {
           )}
         >
           {slide.video_url ? (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="h-full w-full object-cover opacity-40"
-            >
-              <source src={slide.video_url} type="video/mp4" />
-            </video>
+            <>
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="h-full w-full object-cover opacity-60"
+              >
+                <source src={slide.video_url} type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+            </>
           ) : (
             <>
               <Image
                 src={slide.image_url}
                 alt={slide.title}
                 fill
-                className="object-cover opacity-30"
+                sizes="100vw"
+                className="object-cover opacity-40"
                 priority={index === 0}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
             </>
           )}
         </div>
       ))}
 
       {/* Content */}
-      <div className="container relative z-10 mx-auto flex h-full flex-col justify-center px-4">
-        <div className="max-w-4xl space-y-8">
+      <div className="container relative z-10 mx-auto flex h-full flex-col justify-center px-4 pt-32 md:pt-28 pb-36 md:pb-24">
+        <div className="max-w-4xl space-y-5 md:space-y-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md animate-in fade-in slide-in-from-left-4 duration-700">
             <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs font-bold uppercase tracking-widest text-slate-300">New Arrivals Available</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Live Showroom Experience</span>
           </div>
 
-          <h1 className="text-6xl font-black tracking-tighter text-white md:text-8xl lg:text-9xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-[1.1] uppercase">
             {displaySlides[currentSlide].title.split(' ').map((word, i) => (
-              <span key={i} className={i === 3 ? "text-primary block sm:inline" : ""}>
-                {word}{' '}
+              <span key={i} className={cn(i === 3 ? "text-primary" : "", "inline-block mr-2 md:mr-3")}>
+                {word}
               </span>
             ))}
           </h1>
 
-          <p className="max-w-2xl text-lg font-medium text-slate-400 md:text-xl lg:text-2xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+          <p className="max-w-lg text-sm font-medium text-slate-400 md:text-base lg:text-lg animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 leading-relaxed">
             {displaySlides[currentSlide].subtitle}
           </p>
 
-          <div className="flex flex-wrap gap-4 pt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+          <div className="flex flex-wrap gap-3 md:gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
             <Link
               href="/products"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "group h-16 rounded-full bg-primary px-10 text-lg font-black text-primary-foreground hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all"
-              )}
+              className="group h-12 md:h-14 inline-flex items-center gap-2 rounded-full bg-primary px-6 md:px-10 text-sm md:text-base font-black text-primary-foreground hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all"
             >
               Explore Shop
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
             </Link>
             
             <Link
               href="/services"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "h-16 rounded-full border-white/10 bg-white/5 px-10 text-lg font-black text-white backdrop-blur-md hover:bg-white/10 transition-all"
-              )}
+              className="h-12 md:h-14 inline-flex items-center rounded-full border border-white/20 bg-white/5 px-6 md:px-10 text-sm md:text-base font-black text-white backdrop-blur-md hover:bg-white/10 transition-all"
             >
               PC Build Guide
             </Link>
@@ -129,7 +127,7 @@ export function Hero({ slides = [] }: HeroProps) {
 
       {/* Slide Indicators */}
       {displaySlides.length > 1 && (
-        <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 gap-3 z-20">
+        <div className="absolute bottom-32 md:bottom-24 left-1/2 flex -translate-x-1/2 gap-3 z-20">
           {displaySlides.map((_, i) => (
             <button
               key={i}

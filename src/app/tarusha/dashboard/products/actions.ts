@@ -11,7 +11,16 @@ export async function createProduct(formData: FormData) {
 
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
-  const category = formData.get('category') as string;
+  const category_id = formData.get('category_id') as string;
+  
+  // Get category slug for backward compatibility
+  const { data: categoryData } = await supabase
+    .from('categories')
+    .select('slug')
+    .eq('id', category_id)
+    .single();
+  const category = categoryData?.slug || '';
+
   const price = parseFloat(formData.get('price') as string);
   const in_stock = formData.get('in_stock') === 'on';
   const images = formData.getAll('images') as File[];
@@ -48,6 +57,7 @@ export async function createProduct(formData: FormData) {
         title,
         description,
         category,
+        category_id,
         price,
         in_stock,
         image_url: uploadedUrls[0] || null,
@@ -69,7 +79,16 @@ export async function updateProduct(formData: FormData) {
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
-  const category = formData.get('category') as string;
+  const category_id = formData.get('category_id') as string;
+
+  // Get category slug for backward compatibility
+  const { data: categoryData } = await supabase
+    .from('categories')
+    .select('slug')
+    .eq('id', category_id)
+    .single();
+  const category = categoryData?.slug || '';
+
   const price = parseFloat(formData.get('price') as string);
   const in_stock = formData.get('in_stock') === 'on';
   const newImages = formData.getAll('images') as File[];
@@ -106,6 +125,7 @@ export async function updateProduct(formData: FormData) {
       title,
       description,
       category,
+      category_id,
       price,
       in_stock,
       image_url: uploadedUrls[0] || null,

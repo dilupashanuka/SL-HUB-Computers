@@ -83,7 +83,7 @@ export default async function ReviewsPage() {
                 <div className="flex items-center gap-4 mb-4">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center">
                     {review.avatar_url ? (
-                      <Image src={review.avatar_url} alt={review.customer_name} fill className="object-cover" />
+                      <Image src={review.avatar_url} alt={review.customer_name} fill sizes="48px" className="object-cover" />
                     ) : (
                       <User className="w-6 h-6 text-slate-500" />
                     )}

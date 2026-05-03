@@ -6,11 +6,12 @@ import { revalidatePath } from 'next/cache';
 export async function addCategory(formData: FormData) {
   const supabase = await createClient();
   const name = formData.get('name') as string;
+  const parent_id = formData.get('parent_id') as string || null;
   const slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
   const { error } = await supabase
     .from('categories')
-    .insert([{ name, slug }]);
+    .insert([{ name, slug, parent_id }]);
 
   revalidatePath('/tarusha/dashboard/categories');
 }

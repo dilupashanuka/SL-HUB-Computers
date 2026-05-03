@@ -1,0 +1,179 @@
+import { createClient } from '@/utils/supabase/server';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Save, Globe, Phone, MapPin, ShieldAlert, Image as ImageIcon, Share2 } from 'lucide-react';
+import { updateSettings } from './actions';
+import { AdminMediaUpload } from '@/components/admin/AdminMediaUpload';
+
+export default async function SettingsPage() {
+  const supabase = await createClient();
+  const { data: settings } = await supabase
+    .from('site_settings')
+    .select('*')
+    .single();
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-4xl font-extrabold tracking-tight text-white">Global Configuration</h1>
+        <p className="text-slate-400 font-medium">Manage your brand identity and system-wide parameters.</p>
+      </div>
+
+      <form action={updateSettings}>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Brand Identity */}
+          <div className="lg:col-span-2 space-y-8">
+            <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-blue-400" /> Branding & SEO
+                </CardTitle>
+                <CardDescription className="text-slate-500">Configure how your business appears online.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Platform Name</Label>
+                  <Input 
+                    name="site_name" 
+                    defaultValue={settings?.site_name || 'SL HUB COMPUTER'} 
+                    className="bg-white/5 border-white/10 text-white font-bold h-12" 
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Store Address</Label>
+                  <Textarea 
+                    name="address" 
+                    defaultValue={settings?.address || 'Deiyandara, Sri Lanka'} 
+                    className="bg-white/5 border-white/10 text-white h-24 resize-none" 
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Official Logo</Label>
+                  <AdminMediaUpload name="logo" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Share2 className="w-5 h-5 text-purple-400" /> Social Presence
+                </CardTitle>
+                <CardDescription className="text-slate-500">Connect your platform with social media channels.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Facebook URL</Label>
+                  <Input 
+                    name="facebook_url" 
+                    defaultValue={settings?.facebook_url || ''} 
+                    placeholder="https://facebook.com/..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Instagram URL</Label>
+                  <Input 
+                    name="instagram_url" 
+                    defaultValue={settings?.instagram_url || ''} 
+                    placeholder="https://instagram.com/..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">TikTok URL</Label>
+                  <Input 
+                    name="tiktok_url" 
+                    defaultValue={settings?.tiktok_url || ''} 
+                    placeholder="https://tiktok.com/@..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">YouTube URL</Label>
+                  <Input 
+                    name="youtube_url" 
+                    defaultValue={settings?.youtube_url || ''} 
+                    placeholder="https://youtube.com/..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Phone className="w-5 h-5 text-green-400" /> Support Channels
+                </CardTitle>
+                <CardDescription className="text-slate-500">Define primary contact methods for customers.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">WhatsApp Business</Label>
+                  <Input 
+                    name="whatsapp_number" 
+                    defaultValue={settings?.whatsapp_number || '+94710678944'} 
+                    className="bg-white/5 border-white/10 text-green-400 font-mono" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Direct Hotline</Label>
+                  <Input 
+                    name="phone_number" 
+                    defaultValue={settings?.phone_number || '071 067 8944'} 
+                    className="bg-white/5 border-white/10 text-white font-mono" 
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* System Settings */}
+          <div className="space-y-8">
+            <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-white">System Control</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                  <div className="space-y-0.5">
+                    <Label className="text-white font-bold">Maintenance Mode</Label>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Hide store frontend</p>
+                  </div>
+                  <Switch name="maintenance_mode" defaultChecked={settings?.maintenance_mode} />
+                </div>
+
+                <Button type="submit" className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white font-black tracking-widest rounded-2xl shadow-xl shadow-blue-600/20 transition-all active:scale-95 uppercase">
+                  <Save className="w-4 h-4 mr-2" /> Commit Changes
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-red-500/5 border-red-500/20 backdrop-blur-md">
+              <CardContent className="pt-6">
+                <div className="flex gap-4">
+                  <div className="p-3 rounded-xl bg-red-500/20 text-red-400 h-fit">
+                    <ShieldAlert className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold text-white">Critical Access</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Changes here affect the entire platform immediately. Be careful when updating contact details or enabling maintenance mode.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}

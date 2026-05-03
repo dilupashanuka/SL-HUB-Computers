@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Package, ArrowLeft, Upload, Image as ImageIcon } from 'lucide-react';
+import { Package, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { createProduct } from '../actions';
+import { AdminMediaUpload } from '@/components/admin/AdminMediaUpload';
 
 export default async function NewProductPage() {
   const supabase = await createClient();
@@ -61,16 +62,23 @@ export default async function NewProductPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="category" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Category</Label>
+                    <Label htmlFor="category_id" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Category</Label>
                     <select 
-                      id="category" 
-                      name="category" 
+                      id="category_id" 
+                      name="category_id" 
                       className="w-full bg-white/5 border border-white/10 text-white h-12 rounded-lg px-4 focus:outline-none focus:border-blue-500/50 appearance-none"
                       required
                     >
-                      <option value="" disabled className="bg-slate-900">Select Category</option>
-                      {categories?.map(cat => (
-                        <option key={cat.id} value={cat.slug} className="bg-slate-900">{cat.name}</option>
+                      <option value="" disabled selected className="bg-slate-900">Select Category</option>
+                      {categories?.filter(c => !c.parent_id).map(parent => (
+                        <>
+                          <option key={parent.id} value={parent.id} className="bg-slate-900 font-bold">{parent.name}</option>
+                          {categories?.filter(c => c.parent_id === parent.id).map(child => (
+                            <option key={child.id} value={child.id} className="bg-slate-900 pl-4 text-slate-400">
+                              &nbsp;&nbsp;&nbsp;↳ {child.name}
+                            </option>
+                          ))}
+                        </>
                       ))}
                     </select>
                   </div>
@@ -96,19 +104,7 @@ export default async function NewProductPage() {
                 <CardDescription className="text-slate-500">Upload multiple images for your product showcase.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="aspect-square rounded-xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center text-slate-500 hover:border-blue-500/50 hover:text-blue-400 transition-all cursor-pointer bg-white/5 relative">
-                    <input 
-                      type="file" 
-                      name="images" 
-                      multiple 
-                      className="absolute inset-0 opacity-0 cursor-pointer" 
-                      accept="image/*"
-                    />
-                    <Upload className="w-6 h-6 mb-2" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-center px-2">Click to Upload Bulk Images</span>
-                  </div>
-                </div>
+                <AdminMediaUpload name="images" multiple required />
               </CardContent>
             </Card>
           </div>

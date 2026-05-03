@@ -10,6 +10,8 @@ import { addCategory, deleteCategory } from './actions';
 export default async function CategoriesPage() {
   const supabase = await createClient();
   const { data: categories } = await supabase.from('categories').select('*').order('name');
+  
+  const parentCategories = categories?.filter(c => !c.parent_id) || [];
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -39,6 +41,19 @@ export default async function CategoriesPage() {
                   className="bg-white/5 border-white/10 text-white h-11"
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="parent_id" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Parent Category (Optional)</Label>
+                <select 
+                  id="parent_id" 
+                  name="parent_id" 
+                  className="w-full bg-white/5 border border-white/10 text-white h-11 rounded-md px-3 focus:outline-none focus:border-blue-500"
+                >
+                  <option value="" className="bg-slate-900">None (Top Level)</option>
+                  {parentCategories.map(cat => (
+                    <option key={cat.id} value={cat.id} className="bg-slate-900">{cat.name}</option>
+                  ))}
+                </select>
+              </div>
               <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold h-11 rounded-xl">
                 Add Category
               </Button>
@@ -66,8 +81,15 @@ export default async function CategoriesPage() {
                 <TableBody>
                   {categories?.map((cat) => (
                     <TableRow key={cat.id} className="border-white/5 hover:bg-white/5 transition-colors">
-                      <TableCell className="px-6 py-4 font-bold text-white">{cat.name}</TableCell>
-                      <TableCell className="text-slate-500 font-mono text-[11px] uppercase tracking-wider">{cat.slug}</TableCell>
+                      <TableCell className="px-6 py-4 font-bold text-white">
+                        {cat.name}
+                        {cat.parent_id && (
+                          <span className="ml-2 text-[10px] bg-white/5 px-2 py-0.5 rounded text-slate-500 uppercase">Sub</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-slate-500 font-mono text-[11px] uppercase tracking-wider">
+                        {cat.parent_id ? `${categories.find(c => c.id === cat.parent_id)?.name} > ` : ''}{cat.slug}
+                      </TableCell>
                       <TableCell className="text-right px-6">
                         <form action={deleteCategory}>
                           <input type="hidden" name="id" value={cat.id} />

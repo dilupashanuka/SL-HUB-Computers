@@ -2,92 +2,126 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ShieldCheck, Trophy, Target, Heart, Sparkles, ChevronRight, MessageCircle } from 'lucide-react';
 
 export default function AboutPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">About SL HUB COMPUTER</h1>
-          <p className="text-lg text-muted-foreground">
-            The New Experience of Technology in Deiyandara.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold">Our Story</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              SL HUB COMPUTER was established with a clear mission: to bring high-quality, reliable, and affordable technology to the people of Deiyandara and beyond. We recognized the growing need for dependable computing devices and smartphones in our community.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              What started as a small venture has now grown into a trusted destination for Korean branded and used desktop computers, the latest mobile phones, and a comprehensive range of tech accessories.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Our commitment goes beyond just selling products. We pride ourselves on providing exceptional after-sales support, setup upgrades, and repair services to ensure our customers get the most out of their technological investments.
+    <div className="min-h-screen bg-slate-950 pb-40">
+      {/* Header Area */}
+      <div className="pt-40 pb-24 relative overflow-hidden">
+        <div className="glow-mesh absolute inset-0 opacity-40" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl space-y-8">
+             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+              <Sparkles className="w-3 h-3 text-primary" />
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Our Legacy</span>
+            </div>
+            <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none">
+              The Future of <br /> <span className="text-gradient">Tech Retail</span>
+            </h1>
+            <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-2xl">
+              Since our inception in Deiyandara, SL HUB has been more than just a store. 
+              We are a community of creators, gamers, and professionals driven by quality.
             </p>
           </div>
-          <div className="bg-muted rounded-3xl p-8 aspect-square flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10" />
-            <h3 className="text-2xl font-bold text-foreground relative z-10 mb-2">SL HUB</h3>
-            <p className="text-primary font-medium tracking-widest relative z-10 uppercase">Computer</p>
-            <div className="mt-8 text-sm text-muted-foreground max-w-[200px] relative z-10">
-              "The New Experience of Technology"
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 space-y-40">
+        {/* Story Section */}
+        <section className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="relative aspect-square rounded-[4rem] overflow-hidden glass border-white/5 group">
+             <Image 
+              src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop" 
+              alt="Our Workspace" 
+              fill 
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover opacity-60 transition-transform duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
+            <div className="absolute bottom-12 left-12 right-12 p-8 glass rounded-[2.5rem] border-white/10">
+              <p className="text-white font-black italic text-lg leading-snug">
+                "We don't just sell computers; we build the tools that empower your dreams."
+              </p>
             </div>
           </div>
-        </div>
 
-        <div className="bg-muted/50 rounded-3xl p-10 mb-20 border border-border">
-          <h2 className="text-3xl font-bold text-center mb-10">Why Choose Us?</h2>
-          <div className="grid sm:grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-xl font-bold mb-2 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm">1</span>
-                Quality Assurance
-              </h4>
-              <p className="text-muted-foreground pl-10">Every product we sell undergoes rigorous testing to meet our high standards before it reaches your hands.</p>
+          <div className="space-y-10">
+            <div className="space-y-6">
+              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">Our Story</h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
             </div>
-            <div>
-              <h4 className="text-xl font-bold mb-2 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm">2</span>
-                Expert Knowledge
-              </h4>
-              <p className="text-muted-foreground pl-10">Our team consists of passionate tech enthusiasts who can guide you to the perfect solution for your needs and budget.</p>
+            <div className="space-y-6 text-slate-400 font-medium text-lg leading-relaxed">
+              <p>
+                SL HUB COMPUTER was established with a clear mission: to bring high-quality, reliable, and affordable technology to the people of Deiyandara and beyond.
+              </p>
+              <p>
+                What started as a specialized venture for Korean branded desktops has evolved into a full-scale tech ecosystem. We now stock everything from the latest flagship smartphones to professional-grade server components.
+              </p>
+              <p>
+                Our philosophy is simple: **Quality without Compromise**. Every unit that enters our inventory undergoes a rigorous 24-point hardware inspection before it reaches your hands.
+              </p>
             </div>
-            <div>
-              <h4 className="text-xl font-bold mb-2 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm">3</span>
-                Comprehensive Service
-              </h4>
-              <p className="text-muted-foreground pl-10">From initial setup to future upgrades and troubleshooting, we are with you every step of the way.</p>
-            </div>
-            <div>
-              <h4 className="text-xl font-bold mb-2 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm">4</span>
-                Competitive Pricing
-              </h4>
-              <p className="text-muted-foreground pl-10">We believe everyone deserves access to great technology, which is why we offer the best value in the market.</p>
+            <div className="pt-6">
+              <Link href="/products" className="inline-flex h-16 items-center px-10 bg-white text-slate-950 font-black uppercase tracking-widest rounded-full hover:scale-105 transition-all">
+                Explore Inventory
+              </Link>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-6">Ready to upgrade your tech?</h2>
-          <div className="flex justify-center gap-4">
+        {/* Mission/Vision Cards */}
+        <section className="grid md:grid-cols-3 gap-8">
+          <ValueCard 
+            icon={<Target className="w-8 h-8" />}
+            title="Our Mission"
+            desc="To democratize high-end technology by making professional-grade hardware accessible to everyone."
+          />
+          <ValueCard 
+            icon={<ShieldCheck className="w-8 h-8" />}
+            title="Our Promise"
+            desc="Every product comes with a genuine warranty and lifetime technical support from our expert team."
+          />
+          <ValueCard 
+            icon={<Heart className="w-8 h-8" />}
+            title="Our Community"
+            desc="We aren't just sellers; we are your partners in growth, providing the infrastructure for your success."
+          />
+        </section>
+
+        {/* Call to Action */}
+        <section className="text-center space-y-12">
+          <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">Ready to upgrade?</h2>
+          <div className="flex flex-col md:flex-row justify-center items-center gap-6">
             <Link 
-              href="/products"
-              className={cn(buttonVariants({ size: "lg" }))}
+              href="https://wa.me/94710678944" 
+              className="h-20 px-12 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-full flex items-center gap-4 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)] transition-all"
             >
-              Browse Products
+              <MessageCircle className="w-6 h-6" />
+              Chat with an Expert
             </Link>
             <Link 
-              href="/contact"
-              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+              href="/contact" 
+              className="h-20 px-12 glass border-white/10 text-white font-black uppercase tracking-widest rounded-full flex items-center hover:bg-white/5 transition-all"
             >
-              Contact Us
+              Visit Our Store
             </Link>
           </div>
-        </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function ValueCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+  return (
+    <div className="p-12 glass rounded-[3.5rem] border-white/5 hover:border-primary/50 transition-all duration-500 space-y-8 group">
+      <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 group-hover:scale-110">
+        {icon}
+      </div>
+      <div className="space-y-4">
+        <h3 className="text-2xl font-black text-white tracking-tight uppercase group-hover:text-primary transition-colors">{title}</h3>
+        <p className="text-slate-500 font-medium leading-relaxed">{desc}</p>
       </div>
     </div>
   );

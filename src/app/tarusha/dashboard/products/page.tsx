@@ -7,9 +7,23 @@ import { Plus, Edit, Trash2, Package } from 'lucide-react';
 import Link from 'next/link';
 import { deleteProduct } from './actions';
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage(props: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const resolvedSearchParams = await props.searchParams;
+  const categoryFilter = resolvedSearchParams.category;
+
   const supabase = await createClient();
-  const { data: products } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+  let query = supabase
+    .from('products')
+    .select('*, categories(name)')
+    .order('created_at', { ascending: false });
+
+  if (categoryFilter) {
+    query = query.eq('category', categoryFilter);
+  }
+
+  const { data: products } = await query;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -28,7 +42,9 @@ export default async function AdminProductsPage() {
 
       <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md overflow-hidden">
         <CardHeader className="border-b border-white/5 bg-white/5">
-          <CardTitle className="text-white">All Store Items</CardTitle>
+          <CardTitle className="text-white">
+            {categoryFilter ? `${categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1)} Items` : 'All Store Items'}
+          </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -50,7 +66,7 @@ export default async function AdminProductsPage() {
                   </TableCell>
                   <TableCell>
                     <span className="px-3 py-1 rounded-lg bg-slate-800 border border-white/10 text-slate-300 text-[11px] font-bold uppercase tracking-wider">
-                      {product.category}
+                      {product.categories?.name || product.category}
                     </span>
                   </TableCell>
                   <TableCell>
