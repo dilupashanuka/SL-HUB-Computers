@@ -248,25 +248,33 @@ export default async function Home() {
         <div className="flex overflow-hidden group">
           <div className="flex gap-20 items-center animate-marquee whitespace-nowrap py-4">
             {(partners && partners.length > 0 ? partners : [
-              { id: 'p1', name: 'Intel', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Intel-logo.svg/2560px-Intel-logo.svg.png' },
-              { id: 'p2', name: 'Nvidia', logo_url: 'https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1280px-Nvidia_logo.svg.png' },
-              { id: 'p3', name: 'Asus', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Asus_Logo.svg/2560px-Asus_Logo.svg.png' },
-              { id: 'p4', name: 'Apple', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1665px-Apple_logo_black.svg.png' },
-              { id: 'p5', name: 'Samsung', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png' },
-              { id: 'p6', name: 'MSI', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/MSI_Logo.svg/2560px-MSI_Logo.svg.png' }
+              { id: 'p1', name: 'Intel' },
+              { id: 'p2', name: 'Nvidia' },
+              { id: 'p3', name: 'Asus' },
+              { id: 'p4', name: 'Apple' },
+              { id: 'p5', name: 'Samsung' },
+              { id: 'p6', name: 'MSI' },
+              { id: 'p7', name: 'Dell' },
+              { id: 'p8', name: 'HP' },
+              { id: 'p9', name: 'Gigabyte' },
+              { id: 'p10', name: 'Corsair' },
             ]).map((partner) => (
-              <BrandLogoClient key={partner.id} name={partner.name} logo={partner.logo_url} />
+              <BrandLogoClient key={partner.id} name={partner.name} logo={(partner as {logo_url?: string}).logo_url} />
             ))}
             {/* Duplicate for infinite loop */}
             {(partners && partners.length > 0 ? partners : [
-              { id: 'p1', name: 'Intel', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Intel-logo.svg/2560px-Intel-logo.svg.png' },
-              { id: 'p2', name: 'Nvidia', logo_url: 'https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1280px-Nvidia_logo.svg.png' },
-              { id: 'p3', name: 'Asus', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Asus_Logo.svg/2560px-Asus_Logo.svg.png' },
-              { id: 'p4', name: 'Apple', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1665px-Apple_logo_black.svg.png' },
-              { id: 'p5', name: 'Samsung', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png' },
-              { id: 'p6', name: 'MSI', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/MSI_Logo.svg/2560px-MSI_Logo.svg.png' }
+              { id: 'p1', name: 'Intel' },
+              { id: 'p2', name: 'Nvidia' },
+              { id: 'p3', name: 'Asus' },
+              { id: 'p4', name: 'Apple' },
+              { id: 'p5', name: 'Samsung' },
+              { id: 'p6', name: 'MSI' },
+              { id: 'p7', name: 'Dell' },
+              { id: 'p8', name: 'HP' },
+              { id: 'p9', name: 'Gigabyte' },
+              { id: 'p10', name: 'Corsair' },
             ]).map((partner) => (
-              <BrandLogoClient key={`dup-${partner.id}`} name={partner.name} logo={partner.logo_url} />
+              <BrandLogoClient key={`dup-${partner.id}`} name={partner.name} logo={(partner as {logo_url?: string}).logo_url} />
             ))}
           </div>
         </div>
