@@ -14,7 +14,7 @@ export function SortDropdown({ currentSort }: { currentSort: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleSortChange = (value: string | null) => {
+  const handleSortChange = (value: string | null, eventDetails?: any) => {
     if (!value) return;
     const params = new URLSearchParams(searchParams.toString());
     params.set('sort', value);
