@@ -14,7 +14,7 @@ export function SortDropdown({ currentSort }: { currentSort: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleSortChange = (value: string | null) => {
+  const handleSortChange = (value: string | null, _eventDetails?: any) => {
     if (!value) return;
     const params = new URLSearchParams(searchParams.toString());
     params.set('sort', value);
@@ -22,7 +22,7 @@ export function SortDropdown({ currentSort }: { currentSort: string }) {
   };
 
   return (
-    <Select value={currentSort || ''} onValueChange={(value) => handleSortChange(value)}>
+    <Select value={currentSort || ''} onValueChange={handleSortChange}>
       <SelectTrigger className="w-[200px] h-14 bg-white/5 border-white/10 text-xs font-black uppercase tracking-widest text-slate-300 hover:text-white rounded-2xl focus:ring-0 focus:ring-offset-0">
         <SelectValue placeholder="Sort By" />
       </SelectTrigger>
