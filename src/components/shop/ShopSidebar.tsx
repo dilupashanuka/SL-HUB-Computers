@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ChevronDown, Filter, RotateCcw, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
@@ -11,69 +12,98 @@ interface ShopSidebarProps {
 }
 
 export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
+  const searchParams = useSearchParams();
+  const currentInventory = searchParams.get('inventory');
   const [priceRange, setPriceRange] = useState([0, 500000]);
 
-  const parentCategories = categories?.filter(c => !c.parent_id) || [];
-  const subCategories = categories?.filter(c => c.parent_id) || [];
+  const inventories = [
+    { id: 'workstations', name: 'Workstations', icon: '💻' },
+    { id: 'flagships', name: 'Flagships', icon: '📱' },
+    { id: 'components', name: 'Components', icon: '🛠️' },
+  ];
 
   return (
     <div className="space-y-10 sticky top-32">
-      {/* Category Section */}
+      {/* Inventory Selection */}
       <div className="space-y-6">
         <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em] flex items-center gap-2">
           <Filter className="w-3 h-3" />
-          Filter by Category
+          Main Inventories
         </h3>
         <div className="grid gap-3">
           <a
             href="/products"
             className={cn(
               "flex items-center justify-between p-4 rounded-2xl border transition-all group",
-              !currentCategory
+              !currentCategory 
                 ? "bg-primary/10 border-primary/20 text-white shadow-[0_0_20px_rgba(59,130,246,0.15)]"
                 : "bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:text-white"
             )}
           >
-            <span className="text-sm font-bold uppercase tracking-widest">All Items</span>
+            <span className="text-sm font-bold uppercase tracking-widest">All Inventory</span>
           </a>
 
-          {parentCategories.map((parent) => {
-            const children = subCategories.filter(s => s.parent_id === parent.id);
-            const isActive = currentCategory === parent.slug || children.some(c => c.slug === currentCategory);
-
+          {inventories.map((inv) => {
+            const invCats = categories?.filter(c => c.inventory_type === inv.id && !c.parent_id) || [];
+            
             return (
-              <div key={parent.id} className="space-y-2">
+              <div key={inv.id} className="space-y-3">
                 <a
-                  href={`/products?category=${parent.slug}`}
+                  href={`/products?inventory=${inv.id}`}
                   className={cn(
                     "flex items-center justify-between p-4 rounded-2xl border transition-all group",
-                    isActive
-                      ? "bg-primary/10 border-primary/20 text-white"
+                    currentInventory === inv.id
+                      ? "bg-primary/10 border-primary/20 text-white shadow-[0_0_15px_rgba(59,130,246,0.1)]"
                       : "bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:text-white"
                   )}
                 >
-                  <span className="text-sm font-bold uppercase tracking-widest">{parent.name}</span>
-                  {children.length > 0 && <ChevronDown className={cn("w-4 h-4 transition-transform", isActive ? "rotate-180" : "")} />}
+                  <span className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                    <span className="text-lg">{inv.icon}</span> {inv.name}
+                  </span>
                 </a>
                 
-                {children.length > 0 && isActive && (
-                  <div className="pl-6 grid gap-2 animate-in slide-in-from-top-2 duration-300">
-                    {children.map((child) => (
-                      <a
-                        key={child.id}
-                        href={`/products?category=${child.slug}`}
-                        className={cn(
-                          "flex items-center justify-between p-3 rounded-xl border transition-all text-[11px] font-black uppercase tracking-widest",
-                          currentCategory === child.slug
-                            ? "bg-blue-600/20 border-blue-600/30 text-blue-400"
-                            : "bg-white/5 border-white/5 text-slate-500 hover:text-white hover:border-white/10"
+                <div className="pl-4 grid gap-2">
+                  {invCats.map((cat) => {
+                    const children = categories?.filter(c => c.parent_id === cat.id) || [];
+                    const isActive = currentCategory === cat.slug || children.some(c => c.slug === currentCategory);
+                    
+                    return (
+                      <div key={cat.id} className="space-y-1">
+                        <a
+                          href={`/products?category=${cat.slug}`}
+                          className={cn(
+                            "flex items-center justify-between p-3 px-4 rounded-xl border transition-all text-[11px] font-bold uppercase tracking-widest",
+                            isActive
+                              ? "bg-primary/10 border-primary/20 text-white"
+                              : "bg-white/5 border-white/5 text-slate-500 hover:text-white hover:border-white/10"
+                          )}
+                        >
+                          {cat.name}
+                          {children.length > 0 && <ChevronDown className={cn("w-3 h-3 transition-transform", isActive ? "rotate-180" : "")} />}
+                        </a>
+                        
+                        {isActive && children.length > 0 && (
+                          <div className="pl-4 grid gap-1 animate-in slide-in-from-top-2 duration-300">
+                            {children.map(child => (
+                              <a
+                                key={child.id}
+                                href={`/products?category=${child.slug}`}
+                                className={cn(
+                                  "p-2 px-4 rounded-lg text-[10px] font-bold uppercase tracking-tighter transition-all border",
+                                  currentCategory === child.slug
+                                    ? "bg-blue-600/20 border-blue-600/30 text-blue-400"
+                                    : "bg-transparent border-transparent text-slate-600 hover:text-slate-400"
+                                )}
+                              >
+                                {child.name}
+                              </a>
+                            ))}
+                          </div>
                         )}
-                      >
-                        {child.name}
-                      </a>
-                    ))}
-                  </div>
-                )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}

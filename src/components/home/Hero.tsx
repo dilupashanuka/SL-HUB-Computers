@@ -17,9 +17,14 @@ interface Slide {
 
 interface HeroProps {
   slides?: Slide[];
+  settings?: {
+    hero_title?: string;
+    hero_subtitle?: string;
+    hero_video_url?: string;
+  };
 }
 
-export function Hero({ slides = [] }: HeroProps) {
+export function Hero({ slides = [], settings }: HeroProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -36,15 +41,11 @@ export function Hero({ slides = [] }: HeroProps) {
 
   if (!isMounted) return null;
 
-  // Fallback if no slides
-  const displaySlides = slides.length > 0 ? slides : [
-    {
-      id: '1',
-      image_url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop',
-      title: 'The New Experience of Technology',
-      subtitle: 'Your trusted partner for high-quality branded computers and professional tech services.'
-    }
-  ];
+  // No fallback slides needed, the initial one is in DB
+  const displaySlides = slides;
+  
+  const title = settings?.hero_title || 'The New Experience of Technology';
+  const subtitle = settings?.hero_subtitle || 'Your trusted partner for high-quality branded computers and professional tech services.';
 
   return (
     <section className="relative h-[90vh] min-h-[600px] w-full overflow-hidden bg-slate-950">
@@ -68,19 +69,20 @@ export function Hero({ slides = [] }: HeroProps) {
               >
                 <source src={slide.video_url} type="video/mp4" />
               </video>
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent" />
             </>
           ) : (
             <>
               <Image
                 src={slide.image_url}
-                alt={slide.title}
+                alt="Hero Background"
                 fill
                 sizes="100vw"
-                className="object-cover opacity-40"
+                className="object-cover opacity-60"
                 priority={index === 0}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+              {/* Reduced dark gradient here */}
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/30 to-transparent" />
             </>
           )}
         </div>
@@ -95,7 +97,7 @@ export function Hero({ slides = [] }: HeroProps) {
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white animate-in fade-in slide-in-from-bottom-8 duration-1000 leading-[1.1] uppercase">
-            {displaySlides[currentSlide].title.split(' ').map((word, i) => (
+            {title.split(' ').map((word, i) => (
               <span key={i} className={cn(i === 3 ? "text-primary" : "", "inline-block mr-2 md:mr-3")}>
                 {word}
               </span>
@@ -103,7 +105,7 @@ export function Hero({ slides = [] }: HeroProps) {
           </h1>
 
           <p className="max-w-lg text-sm font-medium text-slate-400 md:text-base lg:text-lg animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 leading-relaxed">
-            {displaySlides[currentSlide].subtitle}
+            {subtitle}
           </p>
 
           <div className="flex flex-wrap gap-3 md:gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
@@ -115,12 +117,23 @@ export function Hero({ slides = [] }: HeroProps) {
               <ArrowRight className="h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
             </Link>
             
-            <Link
-              href="/services"
-              className="h-12 md:h-14 inline-flex items-center rounded-full border border-white/20 bg-white/5 px-6 md:px-10 text-sm md:text-base font-black text-white backdrop-blur-md hover:bg-white/10 transition-all"
-            >
-              PC Build Guide
-            </Link>
+            {settings?.hero_video_url ? (
+              <Link
+                href={settings.hero_video_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-12 md:h-14 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 md:px-10 text-sm md:text-base font-black text-white backdrop-blur-md hover:bg-white/10 transition-all"
+              >
+                <Play className="w-4 h-4 fill-current" /> Watch Video
+              </Link>
+            ) : (
+              <Link
+                href="/services"
+                className="h-12 md:h-14 inline-flex items-center rounded-full border border-white/20 bg-white/5 px-6 md:px-10 text-sm md:text-base font-black text-white backdrop-blur-md hover:bg-white/10 transition-all"
+              >
+                PC Build Guide
+              </Link>
+            )}
           </div>
         </div>
       </div>

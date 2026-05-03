@@ -57,6 +57,55 @@ export default async function SettingsPage() {
                   <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Official Logo</Label>
                   <AdminMediaUpload name="logo" />
                 </div>
+                
+                <div className="pt-6 border-t border-white/10 space-y-6">
+                  <h3 className="font-bold text-white">Homepage Hero Configuration</h3>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Main Heading</Label>
+                    <Input 
+                      name="hero_title" 
+                      defaultValue={settings?.hero_title || 'The New Experience of Technology'} 
+                      className="bg-white/5 border-white/10 text-white font-bold h-12" 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sub Heading</Label>
+                    <Textarea 
+                      name="hero_subtitle" 
+                      defaultValue={settings?.hero_subtitle || 'Your trusted partner for high-quality branded computers and professional tech services.'} 
+                      className="bg-white/5 border-white/10 text-white h-20 resize-none" 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Hero Video URL (Optional)</Label>
+                    <Input 
+                      name="hero_video_url" 
+                      defaultValue={settings?.hero_video_url || ''} 
+                      placeholder="Direct link to mp4 file"
+                      className="bg-white/5 border-white/10 text-blue-400 font-mono text-xs h-10" 
+                    />
+                    <p className="text-[10px] text-slate-500">If provided, changes the "PC Build Guide" button to a "Watch Video" button.</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 pt-4 border-t border-white/10">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">PC Builder Background Image</Label>
+                  <p className="text-xs text-slate-400 mb-2">Upload a high-quality landscape image for the PC Builder section.</p>
+                  <Input 
+                    type="file" 
+                    name="pc_builder_image" 
+                    accept="image/*" 
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                  {settings?.pc_builder_image && (
+                    <div className="mt-2 text-xs text-slate-400 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div> Custom image is currently active
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
 

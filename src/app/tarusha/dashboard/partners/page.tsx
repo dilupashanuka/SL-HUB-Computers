@@ -57,7 +57,7 @@ export default async function PartnersPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {partners?.map((partner) => (
               <div key={partner.id} className="group relative aspect-square glass rounded-[2rem] border-white/5 overflow-hidden flex items-center justify-center p-6 transition-all hover:border-primary/50">
-                <div className="relative w-full h-full">
+                <div className="relative w-full h-20 mb-2">
                   <Image 
                     src={partner.logo_url} 
                     alt={partner.name} 
@@ -66,6 +66,12 @@ export default async function PartnersPage() {
                   />
                 </div>
                 
+                <div className="w-full text-center">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors">
+                    {partner.name}
+                  </span>
+                </div>
+
                 <form action={deletePartner} className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                   <input type="hidden" name="id" value={partner.id} />
                   <input type="hidden" name="logo_url" value={partner.logo_url} />
@@ -78,12 +84,6 @@ export default async function PartnersPage() {
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </form>
-
-                <div className="absolute bottom-4 left-0 right-0 text-center px-4 transform translate-y-full group-hover:translate-y-0 transition-transform">
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1 rounded-full backdrop-blur-md">
-                    {partner.name}
-                  </span>
-                </div>
               </div>
             ))}
             {!partners?.length && (

@@ -51,9 +51,10 @@ export default async function AdminProductsPage(props: {
             <TableHeader>
               <TableRow className="border-white/5 hover:bg-transparent">
                 <TableHead className="text-slate-400 font-bold uppercase tracking-wider text-[11px] py-6 px-6">Product Details</TableHead>
+                <TableHead className="text-slate-400 font-bold uppercase tracking-wider text-[11px]">Inventory</TableHead>
                 <TableHead className="text-slate-400 font-bold uppercase tracking-wider text-[11px]">Category</TableHead>
                 <TableHead className="text-slate-400 font-bold uppercase tracking-wider text-[11px]">Pricing</TableHead>
-                <TableHead className="text-slate-400 font-bold uppercase tracking-wider text-[11px]">Inventory Status</TableHead>
+                <TableHead className="text-slate-400 font-bold uppercase tracking-wider text-[11px]">Status</TableHead>
                 <TableHead className="text-right text-slate-400 font-bold uppercase tracking-wider text-[11px] px-6">Control</TableHead>
               </TableRow>
             </TableHeader>
@@ -62,7 +63,14 @@ export default async function AdminProductsPage(props: {
                 <TableRow key={product.id} className="border-white/5 hover:bg-white/5 transition-colors group">
                   <TableCell className="py-5 px-6">
                     <div className="font-bold text-white group-hover:text-blue-400 transition-colors">{product.title}</div>
-                    <div className="text-[10px] text-slate-500 font-mono mt-1 uppercase tracking-tighter">ID: {product.id.slice(0, 8)}...</div>
+                    {product.brand && (
+                      <div className="text-[10px] text-blue-400 font-bold uppercase tracking-widest mt-1">{product.brand} {product.model}</div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                      {product.inventory_type || 'Unassigned'}
+                    </span>
                   </TableCell>
                   <TableCell>
                     <span className="px-3 py-1 rounded-lg bg-slate-800 border border-white/10 text-slate-300 text-[11px] font-bold uppercase tracking-wider">

@@ -10,6 +10,9 @@ import { createClient } from "@/utils/supabase/server";
 import { HeroVideo } from "@/components/home/HeroVideo";
 import { HeroSubPosts } from "@/components/home/HeroSubPosts";
 import { TrendingAccessories } from "@/components/home/TrendingAccessories";
+import { BrandLogoClient } from '@/components/home/BrandLogoClient';
+import { ScrollToTop } from '@/components/utils/ScrollToTop';
+import { PCBuilderSlider } from '@/components/home/PCBuilderSlider';
 
 export const revalidate = 3600;
 
@@ -65,7 +68,20 @@ export default async function Home() {
   const { data: partners } = await supabase
     .from('partners')
     .select('*')
+    .order('order_index', { ascending: true })
     .order('name', { ascending: true });
+
+  const { data: featuredCategories } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('is_featured', true)
+    .limit(3);
+
+  const { data: settingsData } = await supabase
+    .from('site_settings')
+    .select('*')
+    .limit(1)
+    .single();
 
   // Fetch Accessories (Category slug 'accessories')
   const { data: accessories } = await supabase
@@ -82,9 +98,32 @@ export default async function Home() {
     .limit(8)
     .order('created_at', { ascending: false });
 
+  const displayCategories = featuredCategories && featuredCategories.length > 0 
+    ? featuredCategories 
+    : [
+        { id: '1', name: 'Workstations', description: 'Maximum performance for creators & engineers.', image_url: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=2066&auto=format&fit=crop', slug: 'desktops' },
+        { id: '2', name: 'Flagships', description: 'The latest mobile tech in your pocket.', image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=2080&auto=format&fit=crop', slug: 'phones' },
+        { id: '3', name: 'Components', description: 'Build your dream rig from scratch.', image_url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop', slug: 'accessories' }
+      ];
+
+  const { data: pcBuilderSlides } = await supabase
+    .from('pc_builder_slides')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false });
+
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-950">
-      <Hero slides={slides || []} />
+      <ScrollToTop />
+      <Hero 
+        slides={slides || []} 
+        settings={{
+          hero_title: settingsData?.hero_title,
+          hero_subtitle: settingsData?.hero_subtitle,
+          hero_video_url: settingsData?.hero_video_url
+        }} 
+      />
 
       {/* Hero Video Section */}
       <HeroVideo videos={heroVideos || []} />
@@ -120,27 +159,38 @@ export default async function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            <CategoryCard 
-              title="Workstations" 
-              desc="Maximum performance for creators & engineers."
-              image="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=2066&auto=format&fit=crop"
-              href="/products?category=desktops"
-              stats="45+ Items"
-            />
-            <CategoryCard 
-              title="Flagships" 
-              desc="The latest mobile tech in your pocket."
-              image="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=2080&auto=format&fit=crop"
-              href="/products?category=phones"
-              stats="32+ Items"
-            />
-            <CategoryCard 
-              title="Components" 
-              desc="Build your dream rig from scratch."
-              image="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"
-              href="/products?category=accessories"
-              stats="120+ Items"
-            />
+            {[
+              { 
+                id: 'workstations', 
+                title: 'Workstations', 
+                desc: 'High-performance custom PCs, Laptops, and Professional Workstations.',
+                image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=2070&auto=format&fit=crop'
+              },
+              { 
+                id: 'flagships', 
+                title: 'Flagships', 
+                desc: 'Premium Smartphones, Tablets, and Mobile Ecosystems.',
+                image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=2070&auto=format&fit=crop'
+              },
+              { 
+                id: 'components', 
+                title: 'Components', 
+                desc: 'Genuine PC Parts, Accessories, and Gaming Peripherals.',
+                image: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?q=80&w=2070&auto=format&fit=crop'
+              }
+            ].map(tier => {
+              const dbCat = featuredCategories?.find(c => c.inventory_type === tier.id);
+              return (
+                <CategoryCard 
+                  key={tier.id}
+                  title={dbCat?.name || tier.title}
+                  desc={dbCat?.description || tier.desc}
+                  image={dbCat?.image_url || tier.image}
+                  href={`/products?inventory=${tier.id}`}
+                  stats="Explore"
+                />
+              );
+            })}
           </div>
         </div>
       </section>
@@ -186,31 +236,38 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Brand Showcase - Dynamic Infinite Scroll */}
-      <section className="py-24 border-y border-white/5 bg-slate-900/20 overflow-hidden relative">
-        <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-slate-950 to-transparent z-10" />
-        <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+      {/* Brand Showcase - Horizontal Infinite Scroll */}
+      <section className="py-10 bg-white overflow-hidden relative">
+        <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-white to-transparent z-10" />
+        <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-white to-transparent z-10" />
         
-        <div className="container mx-auto px-4 mb-12">
-          <p className="text-center text-[10px] font-black text-slate-500 uppercase tracking-[0.5em]">Authorized Retailer & Global Partner</p>
+        <div className="container mx-auto px-4 mb-6">
+          <p className="text-center text-[13px] font-black text-slate-800 uppercase tracking-[0.5em]">Authorized Retailer & Global Partner</p>
         </div>
 
         <div className="flex overflow-hidden group">
           <div className="flex gap-20 items-center animate-marquee whitespace-nowrap py-4">
-            {partners?.length ? (
-              <>
-                {partners.map((partner) => (
-                  <BrandLogo key={partner.id} name={partner.name} logo={partner.logo_url} />
-                ))}
-                {/* Duplicate for infinite loop */}
-                {partners.map((partner) => (
-                  <BrandLogo key={`dup-${partner.id}`} name={partner.name} logo={partner.logo_url} />
-                ))}
-              </>
-            ) : (
-              // Fallback to names if no partners added
-              ['Intel', 'Nvidia', 'Asus', 'Apple', 'Samsung', 'MSI', 'Corsair', 'Logitech', 'Razer'].map(n => <BrandLogo key={n} name={n} />)
-            )}
+            {(partners && partners.length > 0 ? partners : [
+              { id: 'p1', name: 'Intel', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Intel-logo.svg/2560px-Intel-logo.svg.png' },
+              { id: 'p2', name: 'Nvidia', logo_url: 'https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1280px-Nvidia_logo.svg.png' },
+              { id: 'p3', name: 'Asus', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Asus_Logo.svg/2560px-Asus_Logo.svg.png' },
+              { id: 'p4', name: 'Apple', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1665px-Apple_logo_black.svg.png' },
+              { id: 'p5', name: 'Samsung', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png' },
+              { id: 'p6', name: 'MSI', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/MSI_Logo.svg/2560px-MSI_Logo.svg.png' }
+            ]).map((partner) => (
+              <BrandLogoClient key={partner.id} name={partner.name} logo={partner.logo_url} />
+            ))}
+            {/* Duplicate for infinite loop */}
+            {(partners && partners.length > 0 ? partners : [
+              { id: 'p1', name: 'Intel', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Intel-logo.svg/2560px-Intel-logo.svg.png' },
+              { id: 'p2', name: 'Nvidia', logo_url: 'https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1280px-Nvidia_logo.svg.png' },
+              { id: 'p3', name: 'Asus', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Asus_Logo.svg/2560px-Asus_Logo.svg.png' },
+              { id: 'p4', name: 'Apple', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1665px-Apple_logo_black.svg.png' },
+              { id: 'p5', name: 'Samsung', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png' },
+              { id: 'p6', name: 'MSI', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/MSI_Logo.svg/2560px-MSI_Logo.svg.png' }
+            ]).map((partner) => (
+              <BrandLogoClient key={`dup-${partner.id}`} name={partner.name} logo={partner.logo_url} />
+            ))}
           </div>
         </div>
       </section>
@@ -256,37 +313,8 @@ export default async function Home() {
       {/* Trending Accessories Section */}
       <TrendingAccessories products={accessories?.map(a => ({ ...a, category: a.categories })) || []} />
 
-      {/* PC Builder CTA - The "Nanotek" Style */}
-      <section className="py-40 container mx-auto px-4">
-        <div className="relative h-[600px] md:h-[800px] rounded-[4rem] overflow-hidden">
-          <Image src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1974&auto=format&fit=crop" alt="PC Build" fill sizes="100vw" className="object-cover opacity-50" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/60 to-transparent" />
-          
-          <div className="absolute inset-0 flex items-center px-10 md:px-24">
-            <div className="max-w-3xl space-y-10">
-              <div className="inline-flex items-center gap-4 text-primary">
-                <Cpu className="w-8 h-8" />
-                <span className="text-sm font-black uppercase tracking-[0.5em]">PC Builder Tool</span>
-              </div>
-              <h2 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-none">
-                Build Your <br /> <span className="text-gradient">Masterpiece</span>
-              </h2>
-              <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed max-w-xl">
-                Select from thousands of premium parts. Our system checks compatibility automatically. 
-              </p>
-              <Link 
-                href="/pc-builder" 
-                className="inline-flex h-20 items-center px-12 bg-primary text-primary-foreground font-black uppercase tracking-[0.2em] rounded-full text-lg shadow-[0_0_40px_rgba(59,130,246,0.4)] hover:scale-105 transition-all active:scale-95"
-              >
-                Start Building Now
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Tech Reels Showcase */}
-      <VideoReels reels={reels || []} />
+      {/* PC Builder CTA - Dynamic Slider */}
+      <PCBuilderSlider slides={pcBuilderSlides || []} />
 
       {/* FAQ Section - High Trust */}
       <section className="py-40 border-t border-white/5">
@@ -371,19 +399,4 @@ function CategoryCard({ title, desc, image, href, stats }: { title: string, desc
       </div>
     </Link>
   )
-}
-
-function BrandLogo({ name, logo }: { name: string, logo?: string }) {
-  if (logo) {
-    return (
-      <div className="relative h-12 w-32 filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-        <Image src={logo} alt={name} fill className="object-contain" />
-      </div>
-    );
-  }
-  return (
-    <div className="text-2xl md:text-4xl font-black text-white/50 tracking-tighter hover:text-primary hover:opacity-100 transition-all cursor-default uppercase">
-      {name}
-    </div>
-  );
 }

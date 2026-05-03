@@ -13,9 +13,9 @@ const NAV_LINKS = [
     label: "Inventory", 
     href: "/products",
     submenu: [
-      { label: "Desktops", href: "/products?category=desktops", icon: Monitor },
-      { label: "Phones", href: "/products?category=phones", icon: Smartphone },
-      { label: "Components", href: "/products?category=accessories", icon: Cpu },
+      { label: "Workstations", href: "/products?inventory=workstations", icon: Monitor },
+      { label: "Flagships", href: "/products?inventory=flagships", icon: Smartphone },
+      { label: "Components", href: "/products?inventory=components", icon: Cpu },
     ]
   },
   { label: "Build PC", href: "/pc-builder" },

@@ -19,8 +19,15 @@ export async function updateSettings(formData: FormData) {
   const instagram_url = formData.get('instagram_url') as string;
   const tiktok_url = formData.get('tiktok_url') as string;
   const youtube_url = formData.get('youtube_url') as string;
+  
+  const hero_title = formData.get('hero_title') as string;
+  const hero_subtitle = formData.get('hero_subtitle') as string;
+  const hero_video_url = formData.get('hero_video_url') as string;
+  
+  const pcBuilderFile = formData.get('pc_builder_image') as File;
 
   let logo_url = undefined;
+  let pc_builder_image = undefined;
 
   if (logoFile && logoFile.size > 0) {
     const fileExt = logoFile.name.split('.').pop();
@@ -39,6 +46,23 @@ export async function updateSettings(formData: FormData) {
     }
   }
 
+  if (pcBuilderFile && pcBuilderFile.size > 0) {
+    const fileExt = pcBuilderFile.name.split('.').pop();
+    const fileName = `pc-builder-${Date.now()}.${fileExt}`;
+    const filePath = `settings/${fileName}`;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from('site-settings')
+      .upload(filePath, pcBuilderFile);
+
+    if (!uploadError) {
+      const { data: { publicUrl } } = supabaseAdmin.storage
+        .from('site-settings')
+        .getPublicUrl(filePath);
+      pc_builder_image = publicUrl;
+    }
+  }
+
   const updateData: any = {
     site_name,
     whatsapp_number,
@@ -49,25 +73,34 @@ export async function updateSettings(formData: FormData) {
     instagram_url,
     tiktok_url,
     youtube_url,
+    hero_title,
+    hero_subtitle,
+    hero_video_url,
     updated_at: new Date().toISOString(),
   };
 
   if (logo_url) {
     updateData.logo_url = logo_url;
   }
+  
+  if (pc_builder_image) {
+    updateData.pc_builder_image = pc_builder_image;
+  }
 
-  const { error } = await supabase
-    .from('site_settings')
-    .update(updateData)
-    .eq('id', 1);
+  const { data: existingSettings } = await supabase.from('site_settings').select('id').single();
 
-  if (error) {
-    // If table doesn't exist or row doesn't exist, this might fail.
-    // In a real app, we'd handle the initial insert here if update fails.
-    console.error('Error updating settings:', error);
-    
-    // Try insert if update failed (assume it failed because of no row)
-    await supabase.from('site_settings').upsert([{ id: 1, ...updateData }]);
+  if (existingSettings) {
+    const { error } = await supabase
+      .from('site_settings')
+      .update(updateData)
+      .eq('id', existingSettings.id);
+
+    if (error) {
+      console.error('Error updating settings:', error);
+    }
+  } else {
+    // Try insert if no row exists
+    await supabase.from('site_settings').insert([updateData]);
   }
 
   revalidatePath('/tarusha/dashboard/settings');

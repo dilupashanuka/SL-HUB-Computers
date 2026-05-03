@@ -78,6 +78,22 @@ export default async function EditProductPage({ params }: { params: { id: string
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
+                    <Label htmlFor="inventory_type" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Main Inventory</Label>
+                    <select 
+                      id="inventory_type" 
+                      name="inventory_type" 
+                      defaultValue={product.inventory_type || ''}
+                      className="w-full bg-white/5 border border-white/10 text-white h-12 rounded-lg px-4 focus:outline-none focus:border-blue-500/50 appearance-none"
+                      required
+                    >
+                      <option value="" disabled className="bg-slate-900">Select Inventory</option>
+                      <option value="workstations" className="bg-slate-900">Workstations</option>
+                      <option value="flagships" className="bg-slate-900">Flagships</option>
+                      <option value="components" className="bg-slate-900">Components</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="category_id" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Category</Label>
                     <select 
                       id="category_id" 
@@ -86,19 +102,50 @@ export default async function EditProductPage({ params }: { params: { id: string
                       className="w-full bg-white/5 border border-white/10 text-white h-12 rounded-lg px-4 focus:outline-none focus:border-blue-500/50 appearance-none"
                       required
                     >
-                      {categories?.filter(c => !c.parent_id).map(parent => (
-                        <>
-                          <option key={parent.id} value={parent.id} className="bg-slate-900 font-bold">{parent.name}</option>
-                          {categories?.filter(c => c.parent_id === parent.id).map(child => (
-                            <option key={child.id} value={child.id} className="bg-slate-900 pl-4 text-slate-400">
-                               &nbsp;&nbsp;&nbsp;↳ {child.name}
-                            </option>
-                          ))}
-                        </>
-                      ))}
+                      <option value="" disabled className="bg-slate-900">Select Category</option>
+                      {['workstations', 'flagships', 'components'].map(inv => {
+                        const invCats = categories?.filter(c => c.inventory_type === inv) || [];
+                        if (invCats.length === 0) return null;
+                        return (
+                          <optgroup key={inv} label={inv.toUpperCase()} className="bg-slate-900 text-blue-400">
+                            {invCats.filter(c => !c.parent_id).map(parent => (
+                              <>
+                                <option key={parent.id} value={parent.id} className="bg-slate-900 font-bold text-white">{parent.name}</option>
+                                {invCats.filter(c => c.parent_id === parent.id).map(child => (
+                                  <option key={child.id} value={child.id} className="bg-slate-900 pl-4 text-slate-400">
+                                    &nbsp;&nbsp;&nbsp;↳ {child.name}
+                                  </option>
+                                ))}
+                              </>
+                            ))}
+                          </optgroup>
+                        );
+                      })}
                     </select>
                   </div>
+                </div>
 
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="brand" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Brand</Label>
+                    <Input 
+                      id="brand" 
+                      name="brand" 
+                      defaultValue={product.brand}
+                      placeholder="e.g., Apple, Asus" 
+                      className="bg-white/5 border-white/10 text-white h-12 focus:border-blue-500/50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="model" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Model</Label>
+                    <Input 
+                      id="model" 
+                      name="model" 
+                      defaultValue={product.model}
+                      placeholder="e.g., iPhone 15 Pro, ROG Strix" 
+                      className="bg-white/5 border-white/10 text-white h-12 focus:border-blue-500/50"
+                    />
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="price" className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Price (LKR)</Label>
                     <Input 

@@ -32,7 +32,7 @@ export function TrendingAccessories({ products }: TrendingAccessoriesProps) {
               The perfect companions for your setup
             </p>
           </div>
-          <Link href="/products?category=accessories" className="hidden sm:flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest group">
+          <Link href="/products?inventory=components" className="hidden sm:flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest group">
             View All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -73,7 +73,7 @@ export function TrendingAccessories({ products }: TrendingAccessoriesProps) {
           ))}
         </div>
         
-        <Link href="/products?category=accessories" className="flex sm:hidden items-center justify-center gap-2 text-slate-400 mt-8 text-[10px] font-black uppercase tracking-widest">
+        <Link href="/products?inventory=components" className="flex sm:hidden items-center justify-center gap-2 text-slate-400 mt-8 text-[10px] font-black uppercase tracking-widest">
           View All <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

@@ -9,23 +9,29 @@ import { SortDropdown } from '@/components/shop/SortDropdown';
 export const revalidate = 0;
 
 export default async function ProductsPage(props: {
-  searchParams: Promise<{ category?: string; sort?: string }>;
+  searchParams: Promise<{ category?: string; sort?: string; inventory?: string }>;
 }) {
   const resolvedSearchParams = await props.searchParams;
   const category = resolvedSearchParams.category;
   const sort = resolvedSearchParams.sort || 'latest';
+  const inventory = resolvedSearchParams.inventory;
   
   const supabase = await createClient();
   const { data: categories } = await supabase.from('categories').select('*').order('name');
   
   let query = supabase.from('products').select('*');
   
+  if (inventory) {
+    query = query.eq('inventory_type', inventory);
+  }
+  
   if (category) {
     const selectedCategory = categories?.find(c => c.slug === category);
     if (selectedCategory) {
+      // Get all subcategories recursively if needed, but for now 1 level is enough
       const children = categories?.filter(c => c.parent_id === selectedCategory.id) || [];
-      const slugs = [category, ...children.map(c => c.slug)];
-      query = query.in('category', slugs);
+      const ids = [selectedCategory.id, ...children.map(c => c.id)];
+      query = query.in('category_id', ids);
     } else {
       query = query.eq('category', category);
     }

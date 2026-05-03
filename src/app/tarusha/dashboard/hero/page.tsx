@@ -56,30 +56,11 @@ export default async function HeroShowcasePage() {
                     </form>
                   </div>
                 </div>
-                <div className="md:col-span-2 p-6">
-                  <form action={updateHeroSlide} className="space-y-4">
-                    <input type="hidden" name="id" value={slide.id} />
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Main Heading</Label>
-                      <Input 
-                        name="title" 
-                        defaultValue={slide.title} 
-                        className="bg-white/5 border-white/10 text-white font-bold h-10" 
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Video URL (Optional)</Label>
-                      <Input 
-                        name="video_url" 
-                        defaultValue={slide.video_url} 
-                        placeholder="Direct link to mp4 file"
-                        className="bg-white/5 border-white/10 text-blue-400 h-10 font-mono text-xs" 
-                      />
-                    </div>
-                    <Button type="submit" variant="outline" className="w-full border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-white/5">
-                      <Save className="w-3.5 h-3.5 mr-2" /> Save Content
-                    </Button>
-                  </form>
+                <div className="flex flex-col h-full justify-center p-6 md:col-span-2">
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-white text-lg">Background Slide</h3>
+                    <p className="text-xs text-slate-400">Image will be included in the homepage background rotation.</p>
+                  </div>
                 </div>
               </div>
             </Card>

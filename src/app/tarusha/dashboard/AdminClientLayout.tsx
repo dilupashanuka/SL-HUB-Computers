@@ -22,6 +22,7 @@ import {
   Sparkles,
   Menu,
   X,
+  Cpu,
   User as UserIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -40,6 +41,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
     { label: 'HERO SHOWCASE', href: '/tarusha/dashboard/hero', icon: ImageIcon },
     { label: 'HERO VIDEOS', href: '/tarusha/dashboard/hero-videos', icon: Video },
     { label: 'HERO SUB POSTS', href: '/tarusha/dashboard/hero-sub-posts', icon: Sparkles },
+    { label: 'PC BUILDER', href: '/tarusha/dashboard/pc-builder', icon: Cpu },
     { label: 'PARTNERS', href: '/tarusha/dashboard/partners', icon: Trophy },
     { label: 'PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
     { label: 'ACCESSORIES', href: '/tarusha/dashboard/products?category=accessories', icon: Package },

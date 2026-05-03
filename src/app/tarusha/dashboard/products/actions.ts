@@ -23,6 +23,9 @@ export async function createProduct(formData: FormData) {
 
   const price = parseFloat(formData.get('price') as string);
   const in_stock = formData.get('in_stock') === 'on';
+  const inventory_type = formData.get('inventory_type') as string;
+  const brand = formData.get('brand') as string;
+  const model = formData.get('model') as string;
   const images = formData.getAll('images') as File[];
 
   const uploadedUrls: string[] = [];
@@ -58,6 +61,9 @@ export async function createProduct(formData: FormData) {
         description,
         category,
         category_id,
+        inventory_type,
+        brand,
+        model,
         price,
         in_stock,
         image_url: uploadedUrls[0] || null,
@@ -91,6 +97,9 @@ export async function updateProduct(formData: FormData) {
 
   const price = parseFloat(formData.get('price') as string);
   const in_stock = formData.get('in_stock') === 'on';
+  const inventory_type = formData.get('inventory_type') as string;
+  const brand = formData.get('brand') as string;
+  const model = formData.get('model') as string;
   const newImages = formData.getAll('images') as File[];
   const existingImages = JSON.parse(formData.get('existing_images') as string || '[]');
 
@@ -126,6 +135,9 @@ export async function updateProduct(formData: FormData) {
       description,
       category,
       category_id,
+      inventory_type,
+      brand,
+      model,
       price,
       in_stock,
       image_url: uploadedUrls[0] || null,
