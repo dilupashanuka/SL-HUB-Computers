@@ -1,120 +1,180 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, ArrowUpRight } from 'lucide-react';
 
 interface FooterProps {
   settings?: {
-    site_name: string;
-    phone_number: string;
-    address: string;
+    site_name?: string;
+    phone_number?: string;
+    address?: string;
     email?: string;
+    whatsapp_number?: string;
     facebook_url?: string;
     instagram_url?: string;
     tiktok_url?: string;
     youtube_url?: string;
+    logo_url?: string;
   }
 }
 
 export function Footer({ settings }: FooterProps) {
-  const socialLinks = [
-    { 
-      url: settings?.facebook_url,
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-        </svg>
-      )
-    },
-    { 
-      url: settings?.tiktok_url,
-      icon: <span className="text-[10px] font-bold tracking-tighter">TikTok</span>
-    },
-    { 
-      url: settings?.instagram_url,
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-          <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-        </svg>
-      )
-    },
-    { 
-      url: settings?.youtube_url,
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.11 1 12 1 12s0 3.89.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.89 23 12 23 12s0-3.89-.46-5.58z"></path>
-          <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon>
-        </svg>
-      )
-    }
-  ];
+  const waNumber = (settings?.whatsapp_number || '94710678944').replace(/[^0-9]/g, '');
+  const phone    = settings?.phone_number || '071 067 8944';
+  const email    = settings?.email || 'slhub9@gmail.com';
+  const address  = settings?.address || 'Deiyandara, Sri Lanka';
+
+  const socials = [
+    { label: 'FB',  url: settings?.facebook_url,  color: 'hover:bg-blue-600' },
+    { label: 'IG',  url: settings?.instagram_url, color: 'hover:bg-pink-600' },
+    { label: 'TT',  url: settings?.tiktok_url,    color: 'hover:bg-slate-100 hover:text-black' },
+    { label: 'YT',  url: settings?.youtube_url,   color: 'hover:bg-red-600' },
+  ].filter(s => s.url);
 
   return (
-    <footer className="bg-slate-950 text-slate-300 py-12">
-      <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8">
-        <div>
-          <h3 className="text-xl font-bold text-white mb-4">{settings?.site_name || 'SL HUB COMPUTER'}</h3>
-          <p className="text-sm mb-4">The New Experience of Technology. Your trusted partner for high-quality branded and used computers, mobile phones, and accessories.</p>
+    <footer className="bg-slate-950 border-t border-white/5">
+
+      {/* Main grid */}
+      <div className="container mx-auto px-4 pt-20 pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+
+        {/* Brand column */}
+        <div className="lg:col-span-1 space-y-6">
+          <div>
+            <h3 className="text-2xl font-black text-white tracking-tighter uppercase">
+              {settings?.site_name || 'SL HUB COMPUTER'}
+            </h3>
+            <div className="w-12 h-1 bg-primary rounded-full mt-3" />
+          </div>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            The New Experience of Technology. Your trusted partner for high-quality branded computers, mobile phones, and tech services.
+          </p>
+
+          {/* Social icons */}
+          {socials.length > 0 && (
+            <div className="flex gap-3">
+              {socials.map((s, i) => (
+                <a
+                  key={i}
+                  href={s.url!}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-slate-400 text-[10px] font-black transition-all duration-300 ${s.color} hover:text-white hover:border-transparent hover:scale-110`}
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
-        
-        <div>
-          <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-          <ul className="space-y-2 text-sm">
-            <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
-            <li><Link href="/products" className="hover:text-white transition-colors">Products</Link></li>
-            <li><Link href="/services" className="hover:text-white transition-colors">Services</Link></li>
-            <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-            <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+
+        {/* Quick Links */}
+        <div className="space-y-6">
+          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Navigate</h4>
+          <ul className="space-y-3">
+            {[
+              { label: 'Home',      href: '/' },
+              { label: 'Products',  href: '/products' },
+              { label: 'PC Builder',href: '/pc-builder' },
+              { label: 'Services',  href: '/services' },
+              { label: 'About Us',  href: '/about' },
+              { label: 'Contact',   href: '/contact' },
+            ].map(link => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="group flex items-center gap-2 text-slate-400 hover:text-white text-sm font-medium transition-colors"
+                >
+                  <span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all duration-300" />
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
-        
-        <div>
-          <h4 className="text-white font-semibold mb-4">Contact Info</h4>
-          <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-primary shrink-0" />
-              <span>{settings?.address || 'Deiyandara, Sri Lanka'}</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Phone className="w-5 h-5 text-primary shrink-0" />
-              <span>{settings?.phone_number || '071 067 8944'}</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-primary shrink-0" />
-              <a href={`mailto:${settings?.email || 'slhub9@gmail.com'}`} className="hover:text-white transition-colors">
-                {settings?.email || 'slhub9@gmail.com'}
+
+        {/* Contact Info */}
+        <div className="space-y-6">
+          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Contact Us</h4>
+          <ul className="space-y-4">
+            <li>
+              <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noreferrer"
+                className="group flex items-start gap-3 text-slate-400 hover:text-white transition-colors">
+                <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
+                  <Phone className="w-3.5 h-3.5" />
+                </div>
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-0.5">Hotline</p>
+                  <p className="text-sm font-bold">{phone}</p>
+                </div>
               </a>
             </li>
+            <li>
+              <a href={`mailto:${email}`}
+                className="group flex items-start gap-3 text-slate-400 hover:text-white transition-colors">
+                <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
+                  <Mail className="w-3.5 h-3.5" />
+                </div>
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-0.5">Email</p>
+                  <p className="text-sm font-bold">{email}</p>
+                </div>
+              </a>
+            </li>
+            <li className="flex items-start gap-3 text-slate-400">
+              <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
+                <MapPin className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-0.5">Location</p>
+                <p className="text-sm font-bold">{address}</p>
+              </div>
+            </li>
           </ul>
         </div>
-        
-        <div>
-          <h4 className="text-white font-semibold mb-4">Follow Us</h4>
-          <div className="flex gap-3 flex-wrap">
-            {socialLinks.map((social, i) => {
-              if (!social.url) return null;
-              
-              return (
-                <a 
-                  key={i}
-                  href={social.url} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all transform hover:scale-110"
-                >
-                  {social.icon}
-                </a>
-              );
-            })}
-          </div>
+
+        {/* Opening Hours */}
+        <div className="space-y-6">
+          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Opening Hours</h4>
+          <ul className="space-y-3 text-sm">
+            {[
+              { day: 'Monday – Friday', time: '8:30 AM – 6:00 PM' },
+              { day: 'Saturday',        time: '9:00 AM – 5:00 PM' },
+              { day: 'Sunday',          time: 'Closed' },
+            ].map(row => (
+              <li key={row.day} className="flex items-center gap-3">
+                <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
+                <div className="flex justify-between w-full">
+                  <span className="text-slate-400 font-medium">{row.day}</span>
+                  <span className={`font-black text-xs ${row.time === 'Closed' ? 'text-red-400' : 'text-white'}`}>{row.time}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          {/* CTA */}
+          <Link
+            href={`https://wa.me/${waNumber}?text=Hello! I need assistance.`}
+            target="_blank"
+            className="group mt-4 flex items-center justify-between w-full px-5 py-3 bg-primary/10 border border-primary/20 rounded-2xl text-primary hover:bg-primary hover:text-white transition-all duration-300"
+          >
+            <span className="text-xs font-black uppercase tracking-widest">Chat Now</span>
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Link>
         </div>
       </div>
-      
-      <div className="container mx-auto px-4 mt-12 pt-8 border-t border-slate-800 text-center text-sm">
-        <p>&copy; {new Date().getFullYear()} SL HUB COMPUTER. All rights reserved.</p>
-        <p className="mt-2 text-slate-500">
-          Designed & Developed by <a href="https://shanukadigital.com" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary transition-colors font-medium">Shanuka Digital Solutions</a>
-        </p>
+
+      {/* Bottom bar */}
+      <div className="border-t border-white/5">
+        <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-slate-600 text-xs font-medium">
+            © {new Date().getFullYear()} {settings?.site_name || 'SL HUB COMPUTER'}. All rights reserved.
+          </p>
+          <p className="text-slate-600 text-xs">
+            Designed & Developed by{' '}
+            <a href="https://shanukadigital.com" target="_blank" rel="noreferrer"
+              className="text-slate-400 hover:text-primary transition-colors font-bold">
+              Shanuka Digital Solutions
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
