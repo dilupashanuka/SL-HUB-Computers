@@ -44,12 +44,17 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
       ]
     },
     {
-      label: 'WEBSITE MANAGEMENT',
+      label: 'HOME PAGE MANAGEMENT',
       items: [
         { label: 'HERO SHOWCASE', href: '/tarusha/dashboard/hero', icon: ImageIcon },
         { label: 'HERO VIDEOS', href: '/tarusha/dashboard/hero-videos', icon: Video },
         { label: 'HERO SUB POSTS', href: '/tarusha/dashboard/hero-sub-posts', icon: Sparkles },
         { label: 'PC BUILDER', href: '/tarusha/dashboard/pc-builder', icon: Cpu },
+      ]
+    },
+    {
+      label: 'SITE SETTINGS',
+      items: [
         { label: 'TECH REELS', href: '/tarusha/dashboard/reels', icon: Play },
         { label: 'FAQ MANAGER', href: '/tarusha/dashboard/faq', icon: HelpCircle },
         { label: 'SITE CONTENT', href: '/tarusha/dashboard/content', icon: FileText },
