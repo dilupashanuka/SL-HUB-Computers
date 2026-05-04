@@ -24,7 +24,7 @@ export default async function PreBuildDetailPage({ params }: { params: Promise<{
       *,
       pc_build_components(
         id, component_type, custom_name, custom_price, quantity,
-        products(id, title, price, image_url, brand, description, specifications)
+        products(*)
       )
     `)
     .eq('id', id)
@@ -41,7 +41,7 @@ export default async function PreBuildDetailPage({ params }: { params: Promise<{
     `🖥️ Category: ${build.category}\n\n` +
     `Components:\n` +
     build.pc_build_components
-      ?.map((c: any) => `• ${c.component_type}: ${c.products?.title || c.custom_name || 'TBD'}`)
+      ?.map((c: any) => `• ${c.component_type}: ${c.products?.name || c.custom_name || 'TBD'}`)
       .join('\n') +
     `\n\nPlease confirm availability!`
   );
@@ -130,7 +130,7 @@ export default async function PreBuildDetailPage({ params }: { params: Promise<{
                 <div className="space-y-3">
                   {components.map((comp: any) => {
                     const product = comp.products;
-                    const name = product?.title || comp.custom_name || 'TBD';
+                    const name = product?.name || comp.custom_name || 'TBD';
                     const price = product?.price || comp.custom_price || 0;
                     const total = price * comp.quantity;
 
@@ -139,8 +139,8 @@ export default async function PreBuildDetailPage({ params }: { params: Promise<{
                         <div className="flex gap-4">
                           {/* Component Image */}
                           <div className="w-16 h-16 flex-shrink-0 rounded-2xl bg-[#0a0d14] border border-white/5 overflow-hidden relative">
-                            {product?.image_url ? (
-                              <Image src={product.image_url} alt={name} fill sizes="64px" className="object-contain p-2" />
+                            {product?.image ? (
+                              <Image src={product.image} alt={name} fill sizes="64px" className="object-contain p-2" />
                             ) : (
                               <div className="absolute inset-0 flex items-center justify-center">
                                 <Cpu className="w-6 h-6 text-slate-700" />

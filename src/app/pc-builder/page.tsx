@@ -17,12 +17,25 @@ export default async function PCBuilderPage() {
   try {
     const { data, error } = await supabase
       .from('pc_builds')
-      .select('*, pc_build_components(*, products(id, title, price, image_url, brand))')
+      .select('*, pc_build_components(*, products(*))')
       .eq('is_active', true)
       .order('is_featured', { ascending: false });
     
     if (error) debugError = error.message;
-    preBuilds = data || [];
+    
+    // Map products.name to products.title and products.image to products.image_url for the frontend
+    preBuilds = (data || []).map(build => ({
+      ...build,
+      pc_build_components: build.pc_build_components?.map((c: any) => ({
+        ...c,
+        products: c.products ? {
+          ...c.products,
+          title: c.products.name,
+          image_url: c.products.image,
+          description: c.products.specifications ? Object.entries(c.products.specifications).map(([k,v]) => `${k}: ${v}`).join(', ') : ''
+        } : null
+      }))
+    }));
   } catch (e: any) { 
     preBuilds = []; 
     debugError = e.message || String(e);
@@ -31,10 +44,16 @@ export default async function PCBuilderPage() {
   try {
     const { data } = await supabase
       .from('products')
-      .select('id, title, price, image_url, brand, category, description, specifications')
+      .select('*')
       .eq('in_stock', true)
-      .order('title');
-    products = data || [];
+      .order('name');
+      
+    products = (data || []).map(p => ({
+      ...p,
+      title: p.name,
+      image_url: p.image,
+      description: p.specifications ? Object.entries(p.specifications).map(([k,v]) => `${k}: ${v}`).join(', ') : ''
+    }));
   } catch (e) { products = []; }
 
   try {
