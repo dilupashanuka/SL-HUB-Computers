@@ -22,6 +22,8 @@ import {
   Sparkles,
   Menu,
   X,
+  Smartphone,
+  Monitor,
   Cpu,
   User as UserIcon
 } from 'lucide-react';
@@ -56,10 +58,12 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
     {
       label: 'INVENTORY & STORE',
       items: [
-        { label: 'PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
-        { label: 'INVENTORY HEADER', href: '/tarusha/dashboard/inventory-header', icon: FileText },
-        { label: 'ACCESSORIES', href: '/tarusha/dashboard/products?category=accessories', icon: Package },
+        { label: 'ALL PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
+        { label: 'FLAGSHIPS', href: '/tarusha/dashboard/flagships', icon: Smartphone },
+        { label: 'WORKSTATIONS', href: '/tarusha/dashboard/computers', icon: Monitor },
+        { label: 'COMPONENTS', href: '/tarusha/dashboard/components', icon: Cpu },
         { label: 'CATEGORIES', href: '/tarusha/dashboard/categories', icon: Grid },
+        { label: 'INVENTORY HEADER', href: '/tarusha/dashboard/inventory-header', icon: FileText },
       ]
     },
     {

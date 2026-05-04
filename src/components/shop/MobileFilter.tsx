@@ -4,7 +4,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Filter, SlidersHorizontal } from "lucide-react";
 import { ShopSidebar } from "./ShopSidebar";
 
-export function MobileFilter({ currentCategory, categories }: { currentCategory?: string; categories: any[] }) {
+export function MobileFilter({ currentCategory, categories, availableSpecs }: { 
+  currentCategory?: string; 
+  categories: any[];
+  availableSpecs?: Record<string, string[]>;
+}) {
   return (
     <Sheet>
       <SheetTrigger>
@@ -18,7 +22,11 @@ export function MobileFilter({ currentCategory, categories }: { currentCategory?
           <SheetHeader className="mb-10">
             <SheetTitle className="text-2xl font-black text-white tracking-tighter uppercase">Shop Filters</SheetTitle>
           </SheetHeader>
-          <ShopSidebar currentCategory={currentCategory} categories={categories} />
+          <ShopSidebar 
+            currentCategory={currentCategory} 
+            categories={categories} 
+            availableSpecs={availableSpecs}
+          />
         </div>
       </SheetContent>
     </Sheet>

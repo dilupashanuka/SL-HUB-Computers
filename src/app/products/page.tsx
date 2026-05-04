@@ -8,6 +8,7 @@ import { SortDropdown } from '@/components/shop/SortDropdown';
 
 import { InventoryHeader } from '@/components/shop/InventoryHeader';
 import { ProductGridClient } from '@/components/shop/ProductGridClient';
+import { CategoryNavigator } from '@/components/shop/CategoryNavigator';
 
 export const revalidate = 0;
 
@@ -26,9 +27,29 @@ export default async function ProductsPage(props: {
   const { data: slides } = await supabase.from('inventory_slides').select('*').order('created_at', { ascending: false });
   const { data: headerSettings } = await supabase.from('site_settings').select('*').eq('id', 'inventory_header_text').single();
   
+  // 1. Fetch products for the current inventory to extract specifications
+  let specQuery = supabase.from('products').select('specifications');
+  if (inventory) specQuery = specQuery.eq('inventory_type', inventory);
+  const { data: allProductsForSpecs } = await specQuery;
+
+  const availableSpecs: Record<string, Set<string>> = {};
+  allProductsForSpecs?.forEach(p => {
+    if (p.specifications) {
+      Object.entries(p.specifications as Record<string, string>).forEach(([key, value]) => {
+        if (!availableSpecs[key]) availableSpecs[key] = new Set();
+        availableSpecs[key].add(value);
+      });
+    }
+  });
+
+  const formattedAvailableSpecs = Object.entries(availableSpecs).reduce((acc, [key, values]) => {
+    acc[key] = Array.from(values).sort();
+    return acc;
+  }, {} as Record<string, string[]>);
+
+  // 2. Build the main query
   let query = supabase.from('products').select('*');
   
-  // ... rest of query logic ...
   if (inventory) {
     query = query.eq('inventory_type', inventory);
   }
@@ -43,6 +64,14 @@ export default async function ProductsPage(props: {
       query = query.eq('category', category);
     }
   }
+
+  // Handle Dynamic Spec Filters
+  Object.entries(resolvedSearchParams).forEach(([key, value]) => {
+    if (key.startsWith('spec_')) {
+      const specKey = key.replace('spec_', '');
+      query = query.contains('specifications', { [specKey]: value });
+    }
+  });
 
   if (min !== undefined) {
     query = query.gte('price', min);
@@ -70,6 +99,11 @@ export default async function ProductsPage(props: {
       <InventoryHeader slides={slides || []} settings={headerSettings} />
 
       <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-12">
+        {/* Category Navigator for Inventory Entry */}
+        {inventory && !category && (
+          <CategoryNavigator categories={categories || []} currentInventory={inventory} />
+        )}
+
         {/* Modern Control Bar */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16 p-6 glass rounded-[2.5rem] border-white/5">
           <div className="flex items-center gap-4">
@@ -84,7 +118,11 @@ export default async function ProductsPage(props: {
           </div>
 
           <div className="flex flex-wrap items-center gap-6">
-             <MobileFilter currentCategory={category} categories={categories || []} />
+             <MobileFilter 
+               currentCategory={category} 
+               categories={categories || []} 
+               availableSpecs={formattedAvailableSpecs}
+             />
              <SortDropdown currentSort={sort} />
           </div>
         </div>
@@ -92,7 +130,11 @@ export default async function ProductsPage(props: {
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
           <aside className="hidden lg:block w-80 shrink-0">
-            <ShopSidebar currentCategory={category} categories={categories || []} />
+            <ShopSidebar 
+              currentCategory={category} 
+              categories={categories || []} 
+              availableSpecs={formattedAvailableSpecs}
+            />
           </aside>
 
           {/* Product Grid */}

@@ -81,7 +81,7 @@ export function Footer({ settings }: FooterProps) {
     <footer className="bg-slate-950 border-t border-white/5">
 
       {/* Main grid */}
-      <div className="container mx-auto px-4 pt-20 pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <div className="container mx-auto px-4 pt-20 pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
 
         {/* Brand column */}
         <div className="lg:col-span-1 space-y-8">
@@ -117,15 +117,36 @@ export function Footer({ settings }: FooterProps) {
 
         {/* Quick Links */}
         <div className="space-y-6">
-          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Navigate</h4>
+          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Shop Segments</h4>
           <ul className="space-y-3">
             {[
-              { label: 'Home',      href: '/' },
-              { label: 'Products',  href: '/products' },
-              { label: 'PC Builder',href: '/pc-builder' },
-              { label: 'Services',  href: '/services' },
-              { label: 'About Us',  href: '/about' },
-              { label: 'Contact',   href: '/contact' },
+              { label: 'Flagships',     href: '/products?inventory=flagships' },
+              { label: 'Workstations',  href: '/products?inventory=workstations' },
+              { label: 'Components',    href: '/products?inventory=components' },
+              { label: 'PC Builder',    href: '/pc-builder' },
+            ].map(link => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="group flex items-center gap-2 text-slate-400 hover:text-white text-sm font-medium transition-colors"
+                >
+                  <span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all duration-300" />
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Explore Links */}
+        <div className="space-y-6">
+          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Explore</h4>
+          <ul className="space-y-3">
+            {[
+              { label: 'All Products', href: '/products' },
+              { label: 'Our Services', href: '/services' },
+              { label: 'About Us',     href: '/about' },
+              { label: 'Contact',      href: '/contact' },
             ].map(link => (
               <li key={link.href}>
                 <Link

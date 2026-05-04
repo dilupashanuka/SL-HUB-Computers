@@ -10,9 +10,10 @@ import { Slider } from "@/components/ui/slider";
 interface ShopSidebarProps {
   currentCategory?: string;
   categories: any[];
+  availableSpecs?: Record<string, string[]>;
 }
 
-export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
+export function ShopSidebar({ currentCategory, categories, availableSpecs }: ShopSidebarProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentInventory = searchParams.get('inventory');
@@ -20,6 +21,19 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
   const initialMin = Number(searchParams.get('min')) || 0;
   const initialMax = Number(searchParams.get('max')) || 1000000;
   const [priceRange, setPriceRange] = useState([initialMin, initialMax]);
+
+  const handleSpecToggle = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const currentVal = params.get(`spec_${key}`);
+    
+    if (currentVal === value) {
+      params.delete(`spec_${key}`);
+    } else {
+      params.set(`spec_${key}`, value);
+    }
+    
+    router.push(`/products?${params.toString()}`, { scroll: false });
+  };
 
   const inventories = [
     { id: 'workstations', name: 'Workstations', icon: <Monitor className="w-5 h-5" />, color: 'text-blue-400' },
@@ -212,6 +226,43 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
           </div>
         </div>
       </div>
+
+      {/* Dynamic Technical Filters */}
+      {availableSpecs && Object.keys(availableSpecs).length > 0 && (
+        <div className="space-y-8 p-8 glass rounded-[2.5rem] border border-white/5 bg-gradient-to-br from-white/[0.01] to-transparent">
+          <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em] flex items-center gap-2">
+            <Cpu className="w-3 h-3" />
+            Technical Details
+          </h3>
+          
+          <div className="space-y-8">
+            {Object.entries(availableSpecs).map(([key, values]) => (
+              <div key={key} className="space-y-4">
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest px-2">{key}</p>
+                <div className="flex flex-wrap gap-2">
+                  {values.map((val) => {
+                    const isActive = searchParams.get(`spec_${key}`) === val;
+                    return (
+                      <button
+                        key={val}
+                        onClick={() => handleSpecToggle(key, val)}
+                        className={cn(
+                          "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all",
+                          isActive 
+                            ? "bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                            : "bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:text-white"
+                        )}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Trust & Filters */}
       <div className="space-y-6">
