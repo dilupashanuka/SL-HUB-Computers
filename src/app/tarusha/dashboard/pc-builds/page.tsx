@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Plus, Star, Edit, Trash2, Cpu, Monitor, Smartphone, Zap, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Star, Edit, Trash2, Cpu, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { deletePCBuild, toggleBuildFeatured } from './actions';
 import { Button } from '@/components/ui/button';
@@ -16,10 +16,112 @@ const CATEGORY_STYLES: Record<string, { color: string; label: string }> = {
 
 export default async function PCBuildsAdminPage() {
   const supabase = await createClient();
-  const { data: builds } = await supabase
-    .from('pc_builds')
-    .select('*, pc_build_components(count)')
-    .order('created_at', { ascending: false });
+  let builds: any[] = [];
+  let tableError = false;
+
+  try {
+    const { data, error } = await supabase
+      .from('pc_builds')
+      .select('*, pc_build_components(count)')
+      .order('created_at', { ascending: false });
+    if (error) tableError = true;
+    else builds = data || [];
+  } catch {
+    tableError = true;
+  }
+
+  if (tableError) {
+    return (
+      <div className="space-y-8 animate-in fade-in duration-700">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+            <AlertTriangle className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-extrabold text-white">PC Builds — Setup Required</h1>
+            <p className="text-slate-400 text-sm">Database tables not found. Run the SQL migration first.</p>
+          </div>
+        </div>
+        <div className="p-8 bg-red-500/5 border border-red-500/20 rounded-[2rem] space-y-4">
+          <p className="text-red-400 font-black text-sm uppercase tracking-widest">⚠️ Supabase SQL Editor-ෙ මේ SQL run කරන්න:</p>
+          <pre className="text-xs text-slate-300 bg-slate-950 border border-white/10 rounded-2xl p-6 overflow-x-auto whitespace-pre-wrap">
+{`-- Run this in Supabase SQL Editor
+CREATE TABLE IF NOT EXISTS pc_builds (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT DEFAULT 'gaming',
+  badge_text TEXT,
+  image_url TEXT,
+  total_price NUMERIC DEFAULT 0,
+  is_featured BOOLEAN DEFAULT false,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS pc_build_components (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  build_id UUID REFERENCES pc_builds(id) ON DELETE CASCADE,
+  component_type TEXT NOT NULL,
+  product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+  custom_name TEXT,
+  custom_price NUMERIC DEFAULT 0,
+  quantity INT DEFAULT 1,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE OR REPLACE FUNCTION update_build_total()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE pc_builds SET
+    total_price = (
+      SELECT COALESCE(SUM(
+        CASE WHEN pbc.product_id IS NOT NULL
+          THEN (SELECT price FROM products WHERE id = pbc.product_id) * pbc.quantity
+          ELSE pbc.custom_price * pbc.quantity
+        END
+      ), 0)
+      FROM pc_build_components pbc
+      WHERE pbc.build_id = COALESCE(NEW.build_id, OLD.build_id)
+    ),
+    updated_at = now()
+  WHERE id = COALESCE(NEW.build_id, OLD.build_id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_update_build_total ON pc_build_components;
+CREATE TRIGGER trg_update_build_total
+AFTER INSERT OR UPDATE OR DELETE ON pc_build_components
+FOR EACH ROW EXECUTE FUNCTION update_build_total();
+
+ALTER TABLE pc_builds ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pc_build_components ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read active builds" ON pc_builds FOR SELECT USING (is_active = true);
+CREATE POLICY "Auth manage builds" ON pc_builds FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Public read components" ON pc_build_components FOR SELECT USING (true);
+CREATE POLICY "Auth manage components" ON pc_build_components FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+CREATE TABLE IF NOT EXISTS pc_component_type_categories (
+  component_type TEXT PRIMARY KEY,
+  category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE pc_component_type_categories ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone read mappings" ON pc_component_type_categories FOR SELECT USING (true);
+CREATE POLICY "Auth manage mappings" ON pc_component_type_categories FOR ALL TO authenticated USING (true) WITH CHECK (true);
+INSERT INTO pc_component_type_categories (component_type) VALUES
+  ('CPU'),('GPU'),('RAM'),('Storage'),('Motherboard'),('PSU'),('Case'),('Cooler'),('Monitor'),('Other')
+ON CONFLICT (component_type) DO NOTHING;`}
+          </pre>
+          <p className="text-slate-400 text-sm">SQL run කළාට පස්සේ මේ page reload කරන්න.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
