@@ -39,7 +39,7 @@ export function CategoryNavigator({ categories, currentInventory }: CategoryNavi
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {filteredCategories.map((category, index) => (
           <motion.div
             key={category.id}
@@ -49,7 +49,7 @@ export function CategoryNavigator({ categories, currentInventory }: CategoryNavi
           >
             <Link 
               href={`/products?category=${category.slug}${currentInventory ? `&inventory=${currentInventory}` : ''}`}
-              className="group block relative aspect-[4/5] rounded-3xl overflow-hidden bg-slate-900 border border-white/5 hover:border-blue-500/50 transition-all duration-500"
+              className="group block relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-900 border border-white/5 hover:border-blue-500/50 transition-all duration-500"
             >
               {category.image_url ? (
                 <Image 
@@ -60,23 +60,18 @@ export function CategoryNavigator({ categories, currentInventory }: CategoryNavi
                 />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20 flex items-center justify-center">
-                   <LayoutGrid className="w-12 h-12 text-white/10" />
+                   <LayoutGrid className="w-8 h-8 text-white/10" />
                 </div>
               )}
               
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
               
-              <div className="absolute inset-x-0 bottom-0 p-6 space-y-2">
-                <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">
+              <div className="absolute inset-x-0 bottom-0 p-4 space-y-1">
+                <h3 className="text-sm font-black text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight leading-tight">
                   {category.name}
                 </h3>
-                {category.description && (
-                  <p className="text-xs text-slate-400 line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {category.description}
-                  </p>
-                )}
-                <div className="pt-2 flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-widest translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  Explore Now <ChevronRight className="w-3 h-3" />
+                <div className="flex items-center gap-1.5 text-[8px] font-black text-blue-500 uppercase tracking-widest translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  Shop <ChevronRight className="w-2.5 h-2.5" />
                 </div>
               </div>
             </Link>
