@@ -119,27 +119,59 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
         )}
       </div>
 
-      {/* Price Range Section */}
-      <div className="space-y-6 p-8 glass rounded-[2.5rem] border border-white/5">
-        <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Price Range (LKR)</h3>
-        <div className="space-y-6 pt-2">
-          <Slider 
-            defaultValue={[0, 500000]} 
-            max={500000} 
-            step={1000} 
-            className="text-primary"
-            onValueChange={(val) => setPriceRange(val as number[])}
-          />
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex-1 p-3 rounded-xl bg-white/5 border border-white/5 text-center">
-              <span className="text-[10px] text-slate-500 block mb-1">Min</span>
-              <span className="text-xs font-bold text-white">Rs. {priceRange[0].toLocaleString()}</span>
+      {/* Premium Price Range Section */}
+      <div className="space-y-8 p-8 glass rounded-[2.5rem] border border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] -mr-16 -mt-16 rounded-full transition-all group-hover:bg-primary/10" />
+        
+        <div className="flex items-center justify-between relative z-10">
+          <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em] flex items-center gap-2">
+            <Filter className="w-3 h-3" />
+            Price Range
+          </h3>
+          <button 
+            onClick={() => setPriceRange([0, 500000])}
+            className="text-[9px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors"
+          >
+            Reset
+          </button>
+        </div>
+
+        <div className="space-y-10 relative z-10 pt-4">
+          <div className="px-2">
+            <Slider 
+              value={priceRange} 
+              max={500000} 
+              step={1000} 
+              className="[&_[role=slider]]:bg-primary [&_[role=slider]]:border-primary [&_[role=slider]]:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+              onValueChange={(val) => setPriceRange(val as number[])}
+            />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Min Price</span>
+              <div className="p-4 rounded-2xl bg-slate-900/50 border border-white/5 flex flex-col group/box hover:border-primary/30 transition-all">
+                <span className="text-[10px] text-primary font-black uppercase mb-1">LKR</span>
+                <span className="text-sm font-black text-white group-hover/box:scale-105 transition-transform origin-left">
+                  {priceRange[0].toLocaleString()}
+                </span>
+              </div>
             </div>
-            <div className="flex-1 p-3 rounded-xl bg-white/5 border border-white/5 text-center">
-              <span className="text-[10px] text-slate-500 block mb-1">Max</span>
-              <span className="text-xs font-bold text-white">Rs. {priceRange[1].toLocaleString()}</span>
+            
+            <div className="space-y-2 text-right">
+              <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Max Price</span>
+              <div className="p-4 rounded-2xl bg-slate-900/50 border border-white/5 flex flex-col group/box hover:border-primary/30 transition-all">
+                <span className="text-[10px] text-primary font-black uppercase mb-1">LKR</span>
+                <span className="text-sm font-black text-white group-hover/box:scale-105 transition-transform origin-right">
+                  {priceRange[1].toLocaleString()}
+                </span>
+              </div>
             </div>
           </div>
+
+          <button className="w-full py-4 rounded-2xl bg-primary/10 border border-primary/20 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all active:scale-95">
+            Apply Filter
+          </button>
         </div>
       </div>
 
