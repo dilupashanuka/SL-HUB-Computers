@@ -1,11 +1,12 @@
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { PCBuilderClient } from '@/components/shop/PCBuilderClient';
 import { Cpu } from 'lucide-react';
 
 export const revalidate = 0;
 
 export default async function PCBuilderPage() {
-  const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
 
   // Safe fetch — tables may not exist yet
   let preBuilds: any[] = [];
@@ -13,31 +14,31 @@ export default async function PCBuilderPage() {
   let categoryMapping: Record<string, string | null> = {};
 
   try {
-    const { data } = await supabase
+    const { data } = await supabaseAdmin
       .from('pc_builds')
       .select('*, pc_build_components(*, products(id, title, price, image_url, brand))')
       .eq('is_active', true)
       .order('is_featured', { ascending: false });
     preBuilds = data || [];
-  } catch { preBuilds = []; }
+  } catch (e) { preBuilds = []; }
 
   try {
-    const { data } = await supabase
+    const { data } = await supabaseAdmin
       .from('products')
       .select('id, title, price, image_url, brand, category, description, specifications')
       .eq('in_stock', true)
       .order('title');
     products = data || [];
-  } catch { products = []; }
+  } catch (e) { products = []; }
 
   try {
-    const { data: mappings } = await supabase
+    const { data: mappings } = await supabaseAdmin
       .from('pc_component_type_categories')
       .select('component_type, category_id');
     for (const m of mappings || []) {
       categoryMapping[m.component_type] = m.category_id;
     }
-  } catch { categoryMapping = {}; }
+  } catch (e) { categoryMapping = {}; }
 
   return (
     <main className="min-h-screen bg-[#080c14] pt-28 pb-24">

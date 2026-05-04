@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,9 +16,9 @@ const CAT_STYLES: Record<string, { border: string; text: string; bg: string; lab
 
 export default async function PreBuildDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
 
-  const { data: build } = await supabase
+  const { data: build } = await supabaseAdmin
     .from('pc_builds')
     .select(`
       *,
