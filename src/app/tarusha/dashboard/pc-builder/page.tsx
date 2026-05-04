@@ -91,17 +91,28 @@ export default async function PCBuilderAdminPage() {
               </div>
               
               <div className="flex-1 space-y-4 py-2">
-                <form action={updatePCSlide} className="space-y-4">
+                <form action={updatePCSlide} className="space-y-4" encType="multipart/form-data">
                   <input type="hidden" name="id" value={slide.id} />
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-3">
-                      <div className="space-y-1">
-                        <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Title</Label>
-                        <Input 
-                          name="title" 
-                          defaultValue={slide.title} 
-                          className="bg-white/5 border-white/10 text-white h-9 text-sm font-bold" 
-                        />
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Title</Label>
+                          <Input 
+                            name="title" 
+                            defaultValue={slide.title} 
+                            className="bg-white/5 border-white/10 text-white h-9 text-sm font-bold" 
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-blue-400">Update Image (Optional)</Label>
+                          <Input 
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                            className="bg-white/5 border-white/10 text-white h-9 text-[10px] file:bg-blue-600 file:text-white file:border-0 file:px-2 file:mr-2" 
+                          />
+                        </div>
                       </div>
                       <div className="space-y-1">
                         <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Description</Label>
@@ -123,8 +134,8 @@ export default async function PCBuilderAdminPage() {
                         <Save className="w-5 h-5" />
                       </Button>
                       
-                      {/* Note: In a real app, this should be a client-side trigger or a separate form action */}
                       <Button 
+                        onClick={() => togglePCSlide(slide.id, slide.is_active)}
                         variant="ghost" 
                         size="icon" 
                         type="button"

@@ -57,28 +57,30 @@ export default async function HeroShowcasePage() {
                   </div>
                 </div>
                 <div className="flex flex-col h-full p-6 md:col-span-2 space-y-4">
-                  <form action={updateHeroSlide} className="space-y-4">
+                  <form action={updateHeroSlide} className="space-y-4" encType="multipart/form-data">
                     <input type="hidden" name="id" value={slide.id} />
                     
                     <div className="grid gap-4">
-                      <div className="space-y-1.5">
-                        <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Slide Title</Label>
-                        <Input 
-                          name="title" 
-                          defaultValue={slide.title} 
-                          placeholder="Main Heading"
-                          className="bg-white/5 border-white/10 text-white h-9 text-sm" 
-                        />
-                      </div>
-                      
-                      <div className="space-y-1.5">
-                        <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Subtitle / Description</Label>
-                        <Input 
-                          name="subtitle" 
-                          defaultValue={slide.subtitle} 
-                          placeholder="Supporting Text"
-                          className="bg-white/5 border-white/10 text-white h-9 text-sm" 
-                        />
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Slide Title</Label>
+                          <Input 
+                            name="title" 
+                            defaultValue={slide.title} 
+                            placeholder="Main Heading"
+                            className="bg-white/5 border-white/10 text-white h-9 text-sm" 
+                          />
+                        </div>
+                        
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Subtitle</Label>
+                          <Input 
+                            name="subtitle" 
+                            defaultValue={slide.subtitle} 
+                            placeholder="Supporting Text"
+                            className="bg-white/5 border-white/10 text-white h-9 text-sm" 
+                          />
+                        </div>
                       </div>
 
                       <div className="space-y-1.5">
@@ -90,11 +92,21 @@ export default async function HeroShowcasePage() {
                           className="bg-white/5 border-white/10 text-white h-9 text-sm font-mono" 
                         />
                       </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-blue-400">Change Background Image (Optional)</Label>
+                        <Input 
+                          type="file"
+                          name="image"
+                          accept="image/*"
+                          className="bg-white/5 border-white/10 text-white h-9 text-xs file:bg-blue-600 file:text-white file:border-0 file:text-[10px] file:font-bold file:px-3 file:mr-3 hover:file:bg-blue-500" 
+                        />
+                      </div>
                     </div>
 
                     <div className="pt-2">
                       <Button type="submit" size="sm" className="bg-blue-600 hover:bg-blue-500 text-white font-bold gap-2">
-                        <Save className="w-4 h-4" /> Save Slide Details
+                        <Save className="w-4 h-4" /> Save All Changes
                       </Button>
                     </div>
                   </form>

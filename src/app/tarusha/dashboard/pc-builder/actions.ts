@@ -70,9 +70,26 @@ export async function updatePCSlide(formData: FormData) {
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
+  const image = formData.get('image') as File;
+
+  let updateData: any = { title, description };
+
+  if (image && image.size > 0) {
+    const fileName = `${Date.now()}-${image.name}`;
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('site-content')
+      .upload(fileName, image);
+
+    if (!uploadError) {
+      const { data: { publicUrl } } = supabase.storage
+        .from('site-content')
+        .getPublicUrl(fileName);
+      updateData.image_url = publicUrl;
+    }
+  }
 
   await supabase.from('pc_builder_slides')
-    .update({ title, description })
+    .update(updateData)
     .eq('id', id);
 
   revalidatePath('/tarusha/dashboard/pc-builder');

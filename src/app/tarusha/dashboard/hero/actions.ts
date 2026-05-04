@@ -75,14 +75,35 @@ export async function deleteHeroSlide(formData: FormData) {
 
 export async function updateHeroSlide(formData: FormData) {
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
   const subtitle = formData.get('subtitle') as string;
   const video_url = formData.get('video_url') as string;
+  const image = formData.get('image') as File;
+
+  let updateData: any = { title, subtitle, video_url };
+
+  if (image && image.size > 0) {
+    const fileExt = image.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `hero-slides/${fileName}`;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from('hero')
+      .upload(filePath, image);
+
+    if (!uploadError) {
+      const { data: { publicUrl } } = supabaseAdmin.storage
+        .from('hero')
+        .getPublicUrl(filePath);
+      updateData.image_url = publicUrl;
+    }
+  }
 
   const { error } = await supabase
     .from('hero_slides')
-    .update({ title, subtitle, video_url })
+    .update(updateData)
     .eq('id', id);
 
   if (error) {
