@@ -50,6 +50,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
         { label: 'HERO VIDEOS', href: '/tarusha/dashboard/hero-videos', icon: Video },
         { label: 'HERO SUB POSTS', href: '/tarusha/dashboard/hero-sub-posts', icon: Sparkles },
         { label: 'PC BUILDER', href: '/tarusha/dashboard/pc-builder', icon: Cpu },
+        { label: 'GLOBAL PARTNERS', href: '/tarusha/dashboard/partners', icon: Trophy },
       ]
     },
     {
@@ -67,7 +68,6 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
         { label: 'PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
         { label: 'ACCESSORIES', href: '/tarusha/dashboard/products?category=accessories', icon: Package },
         { label: 'CATEGORIES', href: '/tarusha/dashboard/categories', icon: Grid },
-        { label: 'PARTNERS', href: '/tarusha/dashboard/partners', icon: Trophy },
       ]
     },
     {
