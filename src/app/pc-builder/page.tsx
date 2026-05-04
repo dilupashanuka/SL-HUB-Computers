@@ -7,20 +7,29 @@ export const revalidate = 0;
 export default async function PCBuilderPage() {
   const supabase = await createClient();
 
-  const { data: preBuilds } = await supabase
-    .from('pc_builds')
-    .select('*, pc_build_components(*, products(id, title, price, image_url, brand))')
-    .eq('is_active', true)
-    .order('is_featured', { ascending: false });
-
-  const { data: products } = await supabase
-    .from('products')
-    .select('id, title, price, image_url, brand, category, description, specifications')
-    .eq('in_stock', true)
-    .order('title');
-
-  // Fetch admin-configured component → category mappings (safe fallback)
+  // Safe fetch — tables may not exist yet
+  let preBuilds: any[] = [];
+  let products: any[] = [];
   let categoryMapping: Record<string, string | null> = {};
+
+  try {
+    const { data } = await supabase
+      .from('pc_builds')
+      .select('*, pc_build_components(*, products(id, title, price, image_url, brand))')
+      .eq('is_active', true)
+      .order('is_featured', { ascending: false });
+    preBuilds = data || [];
+  } catch { preBuilds = []; }
+
+  try {
+    const { data } = await supabase
+      .from('products')
+      .select('id, title, price, image_url, brand, category, description, specifications')
+      .eq('in_stock', true)
+      .order('title');
+    products = data || [];
+  } catch { products = []; }
+
   try {
     const { data: mappings } = await supabase
       .from('pc_component_type_categories')
@@ -28,10 +37,7 @@ export default async function PCBuilderPage() {
     for (const m of mappings || []) {
       categoryMapping[m.component_type] = m.category_id;
     }
-  } catch {
-    // Table may not exist yet — use empty mapping (show all products)
-    categoryMapping = {};
-  }
+  } catch { categoryMapping = {}; }
 
   return (
     <main className="min-h-screen bg-[#080c14] pt-28 pb-24">
@@ -48,11 +54,10 @@ export default async function PCBuilderPage() {
         </p>
       </div>
       <PCBuilderClient
-        preBuilds={preBuilds || []}
-        products={products || []}
+        preBuilds={preBuilds}
+        products={products}
         categoryMapping={categoryMapping}
       />
     </main>
   );
 }
-
