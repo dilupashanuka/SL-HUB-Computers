@@ -26,7 +26,7 @@ export function HeroSubPosts({ posts }: HeroSubPostsProps) {
     
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % posts.length);
-    }, 4000);
+    }, 5000);
     
     return () => clearInterval(interval);
   }, [posts]);
