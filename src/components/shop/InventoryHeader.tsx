@@ -14,10 +14,14 @@ interface InventorySlide {
 }
 
 interface InventoryHeaderProps {
-  slides: InventorySlide[];
+  slides: any[];
+  settings?: {
+    inventory_title?: string;
+    inventory_subtitle?: string;
+  };
 }
 
-export function InventoryHeader({ slides }: InventoryHeaderProps) {
+export function InventoryHeader({ slides, settings }: InventoryHeaderProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -27,6 +31,9 @@ export function InventoryHeader({ slides }: InventoryHeaderProps) {
     }, 5000);
     return () => clearInterval(interval);
   }, [slides]);
+
+  const displayTitle = settings?.inventory_title || "Explore Our Premium Inventory";
+  const displaySubtitle = settings?.inventory_subtitle || "Find the perfect machine for your needs. We stock only the most reliable brands with guaranteed islandwide warranty.";
 
   if (!slides || slides.length === 0) {
     return (
@@ -39,10 +46,10 @@ export function InventoryHeader({ slides }: InventoryHeaderProps) {
               <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">SL HUB Tech Shop</span>
             </div>
             <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none">
-              Explore Our <span className="text-gradient">Premium</span> Inventory
+              {displayTitle}
             </h1>
             <p className="text-lg md:text-xl text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
-              Find the perfect machine for your needs. We stock only the most reliable brands with guaranteed islandwide warranty.
+              {displaySubtitle}
             </p>
           </div>
         </div>
@@ -57,32 +64,23 @@ export function InventoryHeader({ slides }: InventoryHeaderProps) {
       <div className="pt-40 pb-20 relative z-20 text-center bg-gradient-to-b from-slate-950 via-slate-950/80 to-transparent">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto space-y-8">
-            <motion.div 
-              key={`header-badge-${currentSlide}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-6 py-2 backdrop-blur-md"
-            >
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-6 py-2 backdrop-blur-md">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">SL HUB Tech Shop</span>
-            </motion.div>
+            </div>
             
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`header-content-${currentSlide}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-none mb-8">
-                  {activeSlide.title || "Explore Our Premium Inventory"}
-                </h1>
-                <p className="text-lg md:text-xl text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
-                  {activeSlide.subtitle || "Find the perfect machine for your needs. We stock only the most reliable brands with guaranteed islandwide warranty."}
-                </p>
-              </motion.div>
-            </AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-none mb-8">
+                {displayTitle}
+              </h1>
+              <p className="text-lg md:text-xl text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
+                {displaySubtitle}
+              </p>
+            </motion.div>
           </div>
         </div>
       </div>

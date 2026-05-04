@@ -21,6 +21,7 @@ export default async function ProductsPage(props: {
   const supabase = await createClient();
   const { data: categories } = await supabase.from('categories').select('*').order('name');
   const { data: slides } = await supabase.from('inventory_slides').select('*').order('created_at', { ascending: false });
+  const { data: headerSettings } = await supabase.from('site_settings').select('*').eq('id', 'inventory_header_text').single();
   
   let query = supabase.from('products').select('*');
   
@@ -53,7 +54,7 @@ export default async function ProductsPage(props: {
 
   return (
     <div className="min-h-screen bg-slate-950 pb-32">
-      <InventoryHeader slides={slides || []} />
+      <InventoryHeader slides={slides || []} settings={headerSettings} />
 
       <div className="container mx-auto px-4">
         {/* Modern Control Bar */}

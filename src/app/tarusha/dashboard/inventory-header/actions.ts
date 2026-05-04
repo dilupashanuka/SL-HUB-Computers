@@ -3,10 +3,26 @@
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-export async function addInventorySlide(formData: FormData) {
+export async function updateInventoryHeaderText(formData: FormData) {
   const supabase = await createClient();
   const title = formData.get('title') as string;
   const subtitle = formData.get('subtitle') as string;
+
+  // We'll store this in site_settings with a specific key
+  const { error } = await supabase.from('site_settings').upsert({
+    id: 'inventory_header_text',
+    inventory_title: title,
+    inventory_subtitle: subtitle
+  }, { onConflict: 'id' });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/tarusha/dashboard/inventory-header');
+  revalidatePath('/products');
+}
+
+export async function addInventorySlide(formData: FormData) {
+  const supabase = await createClient();
   const imageFiles = formData.get('images') as unknown as File[];
   
   const files = Array.isArray(imageFiles) ? imageFiles : [imageFiles];
@@ -26,8 +42,6 @@ export async function addInventorySlide(formData: FormData) {
       .getPublicUrl(fileName);
 
     await supabase.from('inventory_slides').insert([{
-      title,
-      subtitle,
       image_url: publicUrl,
       is_active: true
     }]);
@@ -55,20 +69,3 @@ export async function deleteInventorySlide(formData: FormData) {
   revalidatePath('/products');
 }
 
-export async function updateInventoryHeader(formData: FormData) {
-  const supabase = await createClient();
-  const id = formData.get('id') as string;
-  const title = formData.get('title') as string;
-  const subtitle = formData.get('subtitle') as string;
-
-  // Update all records or a specific one? 
-  // Usually, title/subtitle are shared. Let's update all for now or have a specific "settings" record.
-  // For simplicity, let's update the specific slide.
-  
-  await supabase.from('inventory_slides')
-    .update({ title, subtitle })
-    .eq('id', id);
-
-  revalidatePath('/tarusha/dashboard/inventory-header');
-  revalidatePath('/products');
-}
