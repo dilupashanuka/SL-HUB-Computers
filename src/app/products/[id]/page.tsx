@@ -100,9 +100,12 @@ export default async function ProductDetailPage(props: {
               </div>
             </div>
 
-            <p className="text-lg text-slate-400 font-medium leading-relaxed">
-              {product.description}
-            </p>
+            <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
+              <h3 className="text-sm font-black uppercase tracking-widest text-white mb-3">Product Description</h3>
+              <p className="text-lg text-slate-400 font-medium leading-relaxed">
+                {product.description || `Experience premium performance and reliability with the ${product.title}. This ${product.category} is carefully selected by SL HUB to ensure the best quality for your computing needs.`}
+              </p>
+            </div>
 
             {/* Quick Specs Mini Grid */}
             <div className="grid grid-cols-2 gap-4">
