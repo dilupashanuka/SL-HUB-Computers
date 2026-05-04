@@ -15,13 +15,24 @@ export default async function PCBuilderPage() {
 
   const { data: products } = await supabase
     .from('products')
-    .select('id, title, price, image_url, brand, category, specifications')
+    .select('id, title, price, image_url, brand, category, description, specifications')
     .eq('in_stock', true)
     .order('title');
 
+  // Fetch admin-configured component → category mappings
+  const { data: mappings } = await supabase
+    .from('pc_component_type_categories')
+    .select('component_type, category_id, categories(name)');
+
+  // Convert to a lookup map: { CPU: 'uuid-xxx', GPU: 'uuid-yyy', ... }
+  const categoryMapping: Record<string, string | null> = {};
+  for (const m of mappings || []) {
+    categoryMapping[m.component_type] = m.category_id;
+  }
+
   return (
     <main className="min-h-screen bg-[#080c14] pt-28 pb-24">
-      <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
+      <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase tracking-widest mb-6">
           <Cpu className="w-3 h-3" /> PC Builder
         </div>
@@ -33,7 +44,12 @@ export default async function PCBuilderPage() {
           Pick from our pre-configured builds or design your own — we'll quote it on WhatsApp instantly.
         </p>
       </div>
-      <PCBuilderClient preBuilds={preBuilds || []} products={products || []} />
+      <PCBuilderClient
+        preBuilds={preBuilds || []}
+        products={products || []}
+        categoryMapping={categoryMapping}
+      />
     </main>
   );
 }
+

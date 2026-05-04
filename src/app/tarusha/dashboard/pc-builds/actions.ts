@@ -134,3 +134,20 @@ export async function toggleBuildFeatured(formData: FormData) {
   revalidatePath('/tarusha/dashboard/pc-builds');
   revalidatePath('/pc-builder');
 }
+
+export async function upsertComponentMapping(formData: FormData) {
+  const supabase = await createClient();
+  const component_type = formData.get('component_type') as string;
+  const category_id = formData.get('category_id') as string || null;
+
+  const { error } = await supabase
+    .from('pc_component_type_categories')
+    .upsert(
+      { component_type, category_id: category_id || null, updated_at: new Date().toISOString() },
+      { onConflict: 'component_type' }
+    );
+
+  if (error) throw new Error(error.message);
+  revalidatePath('/tarusha/dashboard/pc-builds/mapping');
+  revalidatePath('/pc-builder');
+}
