@@ -13,6 +13,7 @@ import { TrendingAccessories } from "@/components/home/TrendingAccessories";
 import { BrandLogoClient } from '@/components/home/BrandLogoClient';
 import { ScrollToTop } from '@/components/utils/ScrollToTop';
 import { PCBuilderSlider } from '@/components/home/PCBuilderSlider';
+import { FAQItem } from '@/components/home/FAQItem';
 
 export const revalidate = 3600;
 
@@ -337,13 +338,7 @@ export default async function Home() {
 
           <div className="space-y-4">
             {faqs?.map((faq) => (
-              <div key={faq.id} className="p-8 rounded-3xl glass border-white/5 hover:border-white/10 transition-all group">
-                <h4 className="text-xl font-bold text-white mb-4 flex items-center justify-between">
-                  {faq.question}
-                  <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-primary transition-all" />
-                </h4>
-                <p className="text-slate-400 font-medium leading-relaxed">{faq.answer}</p>
-              </div>
+              <FAQItem key={faq.id} question={faq.question} answer={faq.answer} />
             ))}
           </div>
         </div>
