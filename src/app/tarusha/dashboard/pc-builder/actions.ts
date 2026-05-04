@@ -64,3 +64,17 @@ export async function togglePCSlide(id: string, currentStatus: boolean) {
   revalidatePath('/tarusha/dashboard/pc-builder');
   revalidatePath('/');
 }
+
+export async function updatePCSlide(formData: FormData) {
+  const supabase = await createClient();
+  const id = formData.get('id') as string;
+  const title = formData.get('title') as string;
+  const description = formData.get('description') as string;
+
+  await supabase.from('pc_builder_slides')
+    .update({ title, description })
+    .eq('id', id);
+
+  revalidatePath('/tarusha/dashboard/pc-builder');
+  revalidatePath('/');
+}

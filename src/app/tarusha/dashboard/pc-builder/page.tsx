@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Cpu, Trash2, Plus, Image as ImageIcon, Eye, EyeOff } from 'lucide-react';
-import { addPCSlide, deletePCSlide, togglePCSlide } from './actions';
+import { addPCSlide, deletePCSlide, togglePCSlide, updatePCSlide } from './actions';
 import { AdminMediaUpload } from '@/components/admin/AdminMediaUpload';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import { Save } from 'lucide-react';
 
 export default async function PCBuilderAdminPage() {
   const supabase = await createClient();
@@ -88,27 +90,68 @@ export default async function PCBuilderAdminPage() {
                 )}
               </div>
               
-              <div className="flex-1 space-y-3 py-2">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight leading-none">{slide.title}</h3>
-                    <p className="text-sm text-slate-500 font-medium leading-relaxed mt-3 line-clamp-2">{slide.description}</p>
-                  </div>
-                  
-                  <div className="flex gap-2 shrink-0">
-                    <form action={deletePCSlide}>
-                      <input type="hidden" name="id" value={slide.id} />
-                      <input type="hidden" name="image_url" value={slide.image_url} />
+              <div className="flex-1 space-y-4 py-2">
+                <form action={updatePCSlide} className="space-y-4">
+                  <input type="hidden" name="id" value={slide.id} />
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-3">
+                      <div className="space-y-1">
+                        <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Title</Label>
+                        <Input 
+                          name="title" 
+                          defaultValue={slide.title} 
+                          className="bg-white/5 border-white/10 text-white h-9 text-sm font-bold" 
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Description</Label>
+                        <Textarea 
+                          name="description" 
+                          defaultValue={slide.description} 
+                          className="bg-white/5 border-white/10 text-white text-xs min-h-[60px]" 
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col gap-2 shrink-0">
+                      <Button 
+                        type="submit"
+                        size="icon" 
+                        className="w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white"
+                        title="Save Changes"
+                      >
+                        <Save className="w-5 h-5" />
+                      </Button>
+                      
+                      {/* Note: In a real app, this should be a client-side trigger or a separate form action */}
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        type="submit" 
-                        className="w-10 h-10 rounded-xl text-white bg-red-600/20 hover:bg-red-600 border border-red-600/20"
+                        type="button"
+                        className={cn(
+                          "w-10 h-10 rounded-xl border border-white/5",
+                          slide.is_active ? "text-green-400 bg-green-400/10" : "text-slate-500 bg-white/5"
+                        )}
                       >
-                        <Trash2 className="w-5 h-5" />
+                        {slide.is_active ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                       </Button>
-                    </form>
+                    </div>
                   </div>
+                </form>
+                
+                <div className="flex justify-end pt-2 border-t border-white/5">
+                  <form action={deletePCSlide}>
+                    <input type="hidden" name="id" value={slide.id} />
+                    <input type="hidden" name="image_url" value={slide.image_url} />
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      type="submit" 
+                      className="text-red-400 hover:text-red-300 hover:bg-red-400/10 text-[10px] font-bold uppercase tracking-wider gap-2"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Delete Item
+                    </Button>
+                  </form>
                 </div>
               </div>
             </div>
