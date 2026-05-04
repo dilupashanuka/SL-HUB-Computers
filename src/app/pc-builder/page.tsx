@@ -13,14 +13,20 @@ export default async function PCBuilderPage() {
   let products: any[] = [];
   let categoryMapping: Record<string, string | null> = {};
 
+  let debugError = '';
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('pc_builds')
       .select('*, pc_build_components(*, products(id, title, price, image_url, brand))')
       .eq('is_active', true)
       .order('is_featured', { ascending: false });
+    
+    if (error) debugError = error.message;
     preBuilds = data || [];
-  } catch (e) { preBuilds = []; }
+  } catch (e: any) { 
+    preBuilds = []; 
+    debugError = e.message || String(e);
+  }
 
   try {
     const { data } = await supabase
@@ -42,7 +48,14 @@ export default async function PCBuilderPage() {
 
   return (
     <main className="min-h-screen bg-[#080c14] pt-28 pb-24">
-      <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
+      {debugError && (
+        <div className="max-w-7xl mx-auto px-6 mb-8 text-red-500 bg-red-500/10 border border-red-500 p-4 rounded-xl">
+          <p className="font-bold">Error fetching builds:</p>
+          <p>{debugError}</p>
+        </div>
+      )}
+      
+      <div className="max-w-7xl mx-auto px-6 mb-12 text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase tracking-widest mb-6">
           <Cpu className="w-3 h-3" /> PC Builder
         </div>
