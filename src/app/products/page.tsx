@@ -35,12 +35,17 @@ export default async function ProductsPage(props: {
   const { data: headerSettings } = await supabase.from('site_settings').select('*').eq('id', 'inventory_header_text').single();
   
   // 1. Fetch products for the current inventory to extract specifications
-  let specQuery = supabase.from('products').select('specifications');
+  let specQuery = supabase.from('products').select('specifications, brand');
   if (inventory) specQuery = specQuery.eq('inventory_type', inventory);
   const { data: allProductsForSpecs } = await specQuery;
 
   const availableSpecs: Record<string, Set<string>> = {};
+  const availableBrands = new Set<string>();
+
   allProductsForSpecs?.forEach(p => {
+    if (p.brand) {
+      availableBrands.add(p.brand);
+    }
     if (p.specifications) {
       Object.entries(p.specifications as Record<string, string>).forEach(([key, value]) => {
         if (!availableSpecs[key]) availableSpecs[key] = new Set();
@@ -53,6 +58,8 @@ export default async function ProductsPage(props: {
     acc[key] = Array.from(values).sort();
     return acc;
   }, {} as Record<string, string[]>);
+
+  const formattedAvailableBrands = Array.from(availableBrands).sort();
 
   // 2. Build the main query
   let query = supabase.from('products').select('*');
@@ -70,6 +77,11 @@ export default async function ProductsPage(props: {
     } else {
       query = query.eq('category', category);
     }
+  }
+
+  // Handle Brand Filter
+  if (resolvedSearchParams.brand) {
+    query = query.eq('brand', resolvedSearchParams.brand);
   }
 
   // Handle Dynamic Spec Filters
@@ -99,6 +111,10 @@ export default async function ProductsPage(props: {
   const mappedProducts = products?.map(p => ({
     ...p,
     title: p.name || p.title,
+    image_url: p.image || p.image_url,
+    price: typeof p.price === 'string' ? parseFloat(p.price) : p.price,
+    description: p.description || (p.specifications ? Object.entries(p.specifications).map(([k, v]) => `${k}: ${v}`).join(', ') : ''),
+    category: categories?.find(c => c.id === p.category_id)?.name || p.category || 'Uncategorized'
   })) || [];
 
   return (
@@ -129,6 +145,7 @@ export default async function ProductsPage(props: {
                currentCategory={category} 
                categories={categories || []} 
                availableSpecs={formattedAvailableSpecs}
+               availableBrands={formattedAvailableBrands}
              />
              <SortDropdown currentSort={sort} />
           </div>
@@ -141,6 +158,7 @@ export default async function ProductsPage(props: {
               currentCategory={category} 
               categories={categories || []} 
               availableSpecs={formattedAvailableSpecs}
+              availableBrands={formattedAvailableBrands}
             />
           </aside>
 
