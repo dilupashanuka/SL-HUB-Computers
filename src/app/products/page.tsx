@@ -5,12 +5,14 @@ import { ProductCard } from '@/components/shop/ProductCard';
 import { ShopSidebar } from '@/components/shop/ShopSidebar';
 import { MobileFilter } from '@/components/shop/MobileFilter';
 import { SortDropdown } from '@/components/shop/SortDropdown';
-
+import { SearchInput } from '@/components/shop/SearchInput';
 import { InventoryHeader } from '@/components/shop/InventoryHeader';
 import { ProductGridClient } from '@/components/shop/ProductGridClient';
 import { CategoryNavigator } from '@/components/shop/CategoryNavigator';
 
 export const revalidate = 0;
+
+const PAGE_SIZE = 12;
 
 export default async function ProductsPage(props: {
   searchParams: Promise<{ 
@@ -19,6 +21,8 @@ export default async function ProductsPage(props: {
     inventory?: string;
     min?: string;
     max?: string;
+    search?: string;
+    page?: string;
     [key: string]: string | undefined;
   }>;
 }) {
@@ -28,6 +32,9 @@ export default async function ProductsPage(props: {
   const inventory = resolvedSearchParams.inventory;
   const min = resolvedSearchParams.min ? Number(resolvedSearchParams.min) : undefined;
   const max = resolvedSearchParams.max ? Number(resolvedSearchParams.max) : undefined;
+  const search = resolvedSearchParams.search || '';
+  const page = resolvedSearchParams.page ? Number(resolvedSearchParams.page) : 1;
+  const offset = (page - 1) * PAGE_SIZE;
   
   const supabase = await createClient();
   const { data: categories } = await supabase.from('categories').select('*').order('name');
@@ -92,6 +99,11 @@ export default async function ProductsPage(props: {
     }
   });
 
+  // Handle Search
+  if (search) {
+    query = query.or(`title.ilike.%${search}%,brand.ilike.%${search}%`);
+  }
+
   if (min !== undefined) {
     query = query.gte('price', min);
   }
@@ -105,6 +117,13 @@ export default async function ProductsPage(props: {
   else if (sort === 'name-az') query = query.order('name', { ascending: true });
   else if (sort === 'name-za') query = query.order('name', { ascending: false });
   else query = query.order('created_at', { ascending: false });
+
+  // Count total for pagination
+  const countQuery = query;
+  const { count: totalCount } = await (countQuery as any).select('id', { count: 'exact', head: true });
+
+  // Apply pagination
+  query = query.range(offset, offset + PAGE_SIZE - 1);
   
   const { data: products } = await query;
 
@@ -130,14 +149,7 @@ export default async function ProductsPage(props: {
         {/* Modern Control Bar */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16 p-6 glass rounded-[2.5rem] border-white/5">
           <div className="flex items-center gap-4">
-            <div className="relative group flex-1 sm:w-96">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-primary transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Search by model, brand, or specs..." 
-                className="w-full bg-slate-900/50 border border-white/5 rounded-2xl pl-14 pr-6 py-4 text-sm text-white focus:outline-none focus:border-primary/50 transition-all"
-              />
-            </div>
+            <SearchInput />
           </div>
 
           <div className="flex flex-wrap items-center gap-6">
@@ -166,12 +178,22 @@ export default async function ProductsPage(props: {
           <div className="flex-1">
             <ProductGridClient products={mappedProducts} />
 
-            {/* Pagination Placeholder */}
-            {products && products.length > 0 && (
+            {/* Pagination */}
+            {totalCount && totalCount > offset + PAGE_SIZE && (
               <div className="mt-20 flex justify-center">
-                <button className="px-12 py-5 glass rounded-full text-xs font-black uppercase tracking-[0.3em] text-white hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-500">
-                  Load More Products
-                </button>
+                <a
+                  href={`?${new URLSearchParams({ ...resolvedSearchParams, page: String(page + 1) }).toString()}`}
+                  className="px-12 py-5 glass rounded-full text-xs font-black uppercase tracking-[0.3em] text-white hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-500"
+                >
+                  Load More Products ({totalCount - (offset + PAGE_SIZE)} remaining)
+                </a>
+              </div>
+            )}
+            {products && products.length === 0 && (
+              <div className="py-32 flex flex-col items-center justify-center gap-6 text-center">
+                <ShoppingCart className="w-16 h-16 text-slate-800" />
+                <p className="text-slate-500 font-bold text-lg">No products found</p>
+                <p className="text-slate-600 text-sm">Try a different search term or clear your filters</p>
               </div>
             )}
           </div>

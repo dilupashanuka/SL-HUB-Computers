@@ -4,8 +4,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { WishlistButton } from '@/components/shop/WishlistButton';
 
 interface Product {
   id: string;
@@ -38,6 +38,9 @@ export function ProductCard({ product }: { product: Product }) {
           ) : (
             <ShoppingCart className="w-16 h-16 text-slate-800" />
           )}
+
+          {/* Wishlist Button - Top Left */}
+          <WishlistButton productId={product.id} size="sm" />
 
           {/* Stock Badge - Bottom Right of Image */}
           <div className="absolute bottom-4 right-4 z-10">

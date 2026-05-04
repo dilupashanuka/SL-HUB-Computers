@@ -2,10 +2,12 @@ import { createClient } from '@/utils/supabase/server';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ShoppingCart, MessageCircle, ShieldCheck, Truck, RotateCcw, Share2, Heart, CheckCircle2, ChevronRight, Zap } from 'lucide-react';
+import { ShoppingCart, MessageCircle, CheckCircle2, ChevronRight, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { ProductGallery } from '@/components/shop/ProductGallery';
+import { WishlistButton } from '@/components/shop/WishlistButton';
 
 export const revalidate = 0;
 
@@ -50,28 +52,13 @@ export default async function ProductDetailPage(props: {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           {/* Left: Image Gallery */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="aspect-square relative rounded-[3rem] overflow-hidden glass border-white/5 group">
-              <Image 
-                src={product.image_url} 
-                alt={product.title} 
-                fill 
-                sizes="(max-width: 1024px) 100vw, 58vw"
-                className="object-contain p-10 transition-transform duration-700 hover:scale-110"
-                priority
-              />
-              <div className="absolute top-8 left-8">
-                <Badge label="Premium Choice" />
-              </div>
-            </div>
-            
-            {/* Gallery Thumbs Placeholder */}
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square relative rounded-2xl glass border-white/5 overflow-hidden cursor-pointer hover:border-primary/50 transition-all">
-                  <Image src={product.image_url} alt="Thumbnail" fill sizes="25vw" className="object-cover opacity-40 hover:opacity-100 transition-opacity" />
-                </div>
-              ))}
-            </div>
+            <ProductGallery
+              images={[
+                product.image_url,
+                ...(Array.isArray(product.images) ? product.images : [])
+              ].filter(Boolean)}
+              title={product.title}
+            />
           </div>
 
           {/* Right: Product Info */}
@@ -127,9 +114,7 @@ export default async function ProductDetailPage(props: {
                 <MessageCircle className="w-6 h-6" />
                 Buy on WhatsApp
               </Link>
-              <button className="h-20 w-20 flex items-center justify-center glass rounded-[2rem] border-white/10 hover:bg-white/5 transition-all">
-                <Heart className="w-8 h-8 text-slate-400 hover:text-red-500" />
-              </button>
+              <WishlistButton productId={product.id} size="lg" />
             </div>
 
             {/* Features List */}
