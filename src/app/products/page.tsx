@@ -59,7 +59,7 @@ export default async function ProductsPage(props: {
     <div className="min-h-screen bg-slate-950 pb-32">
       <InventoryHeader slides={slides || []} settings={headerSettings} />
 
-      <div className="container mx-auto px-4">
+      <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-12">
         {/* Modern Control Bar */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16 p-6 glass rounded-[2.5rem] border-white/5">
           <div className="flex items-center gap-4">
