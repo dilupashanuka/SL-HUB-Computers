@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Sparkles, Trash2, Plus, Save, ImageIcon } from 'lucide-react';
-import { addInventorySlide, deleteInventorySlide, updateInventoryHeader } from './actions';
+import { Sparkles, Trash2, Plus, Save, ImageIcon, FileText } from 'lucide-react';
+import { addInventorySlide, deleteInventorySlide, updateInventoryHeaderText } from './actions';
 import { AdminMediaUpload } from '@/components/admin/AdminMediaUpload';
 import Image from 'next/image';
 
