@@ -6,7 +6,6 @@ import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { QuickView } from './QuickView';
 
 interface Product {
   id: string;
@@ -25,44 +24,42 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <Card className="group overflow-hidden flex flex-col bg-[#0f1219] border border-white/5 hover:border-primary/30 transition-all duration-300 rounded-2xl h-full shadow-lg">
-      <QuickView product={product}>
-        <div className="cursor-pointer relative flex-1 flex flex-col group/item">
-          {/* Image Area */}
-          <div className="relative aspect-square bg-[#0a0d14] p-8 flex items-center justify-center">
-            {product.image_url ? (
-              <Image 
-                src={product.image_url} 
-                alt={product.title} 
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                className="object-contain p-8 transition-transform duration-700 group-hover/item:scale-105"
-              />
+      <Link href={`/products/${product.id}`} className="relative flex-1 flex flex-col group/item">
+        {/* Image Area */}
+        <div className="relative aspect-square bg-[#0a0d14] p-8 flex items-center justify-center">
+          {product.image_url ? (
+            <Image 
+              src={product.image_url} 
+              alt={product.title} 
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+              className="object-contain p-8 transition-transform duration-700 group-hover/item:scale-105"
+            />
+          ) : (
+            <ShoppingCart className="w-16 h-16 text-slate-800" />
+          )}
+
+          {/* Stock Badge - Bottom Right of Image */}
+          <div className="absolute bottom-4 right-4 z-10">
+            {product.in_stock ? (
+              <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-3 py-1 text-[10px] font-bold rounded-full backdrop-blur-md">
+                In Stock
+              </Badge>
             ) : (
-              <ShoppingCart className="w-16 h-16 text-slate-800" />
+              <Badge className="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1 text-[10px] font-bold rounded-full backdrop-blur-md">
+                Out of Stock
+              </Badge>
             )}
-
-            {/* Stock Badge - Bottom Right of Image */}
-            <div className="absolute bottom-4 right-4 z-10">
-              {product.in_stock ? (
-                <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-3 py-1 text-[10px] font-bold rounded-full backdrop-blur-md">
-                  In Stock
-                </Badge>
-              ) : (
-                <Badge className="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1 text-[10px] font-bold rounded-full backdrop-blur-md">
-                  Out of Stock
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          {/* Title Area */}
-          <div className="p-5 pb-2">
-            <h3 className="font-bold text-white text-[15px] uppercase leading-snug group-hover/item:text-primary transition-colors">
-              {product.title}
-            </h3>
           </div>
         </div>
-      </QuickView>
+
+        {/* Title Area */}
+        <div className="p-5 pb-2">
+          <h3 className="font-bold text-white text-[15px] uppercase leading-snug group-hover/item:text-primary transition-colors">
+            {product.title}
+          </h3>
+        </div>
+      </Link>
 
       {/* Price & Cart Area */}
       <div className="p-5 pt-2 mt-auto flex items-end justify-between">

@@ -142,31 +142,25 @@ export default async function ProductDetailPage(props: {
         <div className="mt-32 border-t border-white/5 pt-20">
           <div className="max-w-4xl">
             <h2 className="text-4xl font-black text-white tracking-tighter mb-12">Technical Specifications</h2>
-            <div className="glass rounded-[3rem] overflow-hidden border-white/10">
-              <table className="specs-table">
-                <tbody>
-                  <tr>
-                    <td>Manufacturer</td>
-                    <td>Official Branded</td>
-                  </tr>
-                  <tr>
-                    <td>Category</td>
-                    <td className="capitalize">{product.category}</td>
-                  </tr>
-                  <tr>
-                    <td>Availability</td>
-                    <td>{product.in_stock ? 'Available' : 'Pre-order'}</td>
-                  </tr>
-                  <tr>
-                    <td>Warranty</td>
-                    <td>Standard 36 Months</td>
-                  </tr>
-                  <tr>
-                    <td>Tech Support</td>
-                    <td>Lifetime Support</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="glass rounded-[3rem] overflow-hidden border-white/10 p-8 md:p-12">
+              {product.specifications && Object.keys(product.specifications).length > 0 ? (
+                <div className="flex flex-col text-sm">
+                  {Object.entries(product.specifications).map(([key, value], idx) => (
+                    <div 
+                      key={key} 
+                      className={cn(
+                        "grid grid-cols-1 md:grid-cols-3 p-4 md:p-6 gap-4 md:gap-8 border-b border-white/5 last:border-0",
+                        idx % 2 === 0 ? "bg-white/[0.02] rounded-2xl" : "bg-transparent"
+                      )}
+                    >
+                      <div className="col-span-1 text-slate-400 font-bold uppercase text-xs tracking-[0.2em] flex items-center">{key}</div>
+                      <div className="col-span-2 text-slate-200 font-medium text-base">{value as string}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-400 leading-relaxed text-lg text-center py-10">No specific technical details available for this product.</p>
+              )}
             </div>
           </div>
         </div>
