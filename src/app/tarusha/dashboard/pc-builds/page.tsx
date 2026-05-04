@@ -211,7 +211,7 @@ ON CONFLICT (component_type) DO NOTHING;`}
                       <Star className={cn("w-4 h-4", build.is_featured && "fill-yellow-400")} />
                     </Button>
                   </form>
-                  <form action={deletePCBuild} onSubmit={(e) => !confirm('Delete this build?') && e.preventDefault()}>
+                  <form action={deletePCBuild}>
                     <input type="hidden" name="id" value={build.id} />
                     <Button variant="ghost" size="sm" type="submit"
                       className="rounded-xl border border-white/10 text-slate-500 hover:text-red-400 hover:bg-red-400/10 hover:border-red-400/20"
