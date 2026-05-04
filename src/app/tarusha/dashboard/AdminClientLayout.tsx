@@ -36,23 +36,43 @@ interface AdminClientLayoutProps {
 export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const navItems = [
-    { label: 'DASHBOARD', href: '/tarusha/dashboard', icon: LayoutDashboard },
-    { label: 'HERO SHOWCASE', href: '/tarusha/dashboard/hero', icon: ImageIcon },
-    { label: 'HERO VIDEOS', href: '/tarusha/dashboard/hero-videos', icon: Video },
-    { label: 'HERO SUB POSTS', href: '/tarusha/dashboard/hero-sub-posts', icon: Sparkles },
-    { label: 'PC BUILDER', href: '/tarusha/dashboard/pc-builder', icon: Cpu },
-    { label: 'PARTNERS', href: '/tarusha/dashboard/partners', icon: Trophy },
-    { label: 'PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
-    { label: 'ACCESSORIES', href: '/tarusha/dashboard/products?category=accessories', icon: Package },
-    { label: 'CATEGORIES', href: '/tarusha/dashboard/categories', icon: Grid },
-    { label: 'SOCIAL FEED', href: '/tarusha/dashboard/social-feed', icon: Share2 },
-    { label: 'TECH REELS', href: '/tarusha/dashboard/reels', icon: Play },
-    { label: 'REVIEWS', href: '/tarusha/dashboard/reviews', icon: Star },
-    { label: 'MESSAGES', href: '/tarusha/dashboard/messages', icon: Mail },
-    { label: 'FAQ MANAGER', href: '/tarusha/dashboard/faq', icon: HelpCircle },
-    { label: 'SITE CONTENT', href: '/tarusha/dashboard/content', icon: FileText },
-    { label: 'SITE CONFIG', href: '/tarusha/dashboard/settings', icon: Settings },
+  const navGroups = [
+    {
+      label: 'Main',
+      items: [
+        { label: 'DASHBOARD', href: '/tarusha/dashboard', icon: LayoutDashboard },
+      ]
+    },
+    {
+      label: 'WEBSITE MANAGEMENT',
+      items: [
+        { label: 'HERO SHOWCASE', href: '/tarusha/dashboard/hero', icon: ImageIcon },
+        { label: 'HERO VIDEOS', href: '/tarusha/dashboard/hero-videos', icon: Video },
+        { label: 'HERO SUB POSTS', href: '/tarusha/dashboard/hero-sub-posts', icon: Sparkles },
+        { label: 'PC BUILDER', href: '/tarusha/dashboard/pc-builder', icon: Cpu },
+        { label: 'TECH REELS', href: '/tarusha/dashboard/reels', icon: Play },
+        { label: 'FAQ MANAGER', href: '/tarusha/dashboard/faq', icon: HelpCircle },
+        { label: 'SITE CONTENT', href: '/tarusha/dashboard/content', icon: FileText },
+        { label: 'SITE CONFIG', href: '/tarusha/dashboard/settings', icon: Settings },
+      ]
+    },
+    {
+      label: 'INVENTORY & STORE',
+      items: [
+        { label: 'PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
+        { label: 'ACCESSORIES', href: '/tarusha/dashboard/products?category=accessories', icon: Package },
+        { label: 'CATEGORIES', href: '/tarusha/dashboard/categories', icon: Grid },
+        { label: 'PARTNERS', href: '/tarusha/dashboard/partners', icon: Trophy },
+      ]
+    },
+    {
+      label: 'COMMUNITY & INTERACTION',
+      items: [
+        { label: 'SOCIAL FEED', href: '/tarusha/dashboard/social-feed', icon: Share2 },
+        { label: 'REVIEWS', href: '/tarusha/dashboard/reviews', icon: Star },
+        { label: 'MESSAGES', href: '/tarusha/dashboard/messages', icon: Mail },
+      ]
+    }
   ];
 
   return (
@@ -69,7 +89,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
       {/* Sidebar */}
       <aside className={cn(
         "bg-slate-950/50 backdrop-blur-xl border-r border-white/5 flex flex-col fixed md:sticky top-0 h-screen transition-all duration-300 z-[101]",
-        "w-68 md:flex",
+        "w-72 md:flex",
         isSidebarOpen ? "left-0" : "-left-full md:left-0"
       )}>
         <div className="p-8 border-b border-white/5 flex items-center justify-between">
@@ -99,17 +119,24 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-4 py-2 space-y-1 custom-scrollbar">
-          {navItems.map((item) => (
-            <Link 
-              key={item.href}
-              href={item.href} 
-              className="group flex items-center gap-3 px-4 py-3 text-[13px] font-bold rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all duration-200"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <item.icon className="w-4 h-4 group-hover:text-blue-400 transition-colors" />
-              <span className="tracking-wide uppercase">{item.label}</span>
-            </Link>
+        <nav className="flex-1 overflow-y-auto px-4 py-2 space-y-6 custom-scrollbar">
+          {navGroups.map((group) => (
+            <div key={group.label} className="space-y-2">
+              <h3 className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">{group.label}</h3>
+              <div className="space-y-1">
+                {group.items.map((item) => (
+                  <Link 
+                    key={item.href}
+                    href={item.href} 
+                    className="group flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all duration-200"
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <item.icon className="w-4 h-4 group-hover:text-blue-400 transition-colors" />
+                    <span className="tracking-wide uppercase">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
 
