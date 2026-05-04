@@ -96,23 +96,10 @@ export default function ContactPage() {
                   title="SL HUB COMPUTER Location"
                   className="grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
                 ></iframe>
-                <div className="absolute top-10 right-10 flex gap-3">
+                 <div className="absolute top-10 right-10 flex gap-3">
                   <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/10">
                     <Globe className="w-5 h-5" />
                   </div>
-                </div>
-             </div>
-
-             <div className="p-10 glass rounded-[3rem] border-white/5 space-y-6">
-                <h3 className="text-xl font-black text-white uppercase tracking-widest flex items-center gap-4">
-                  <Send className="w-5 h-5 text-primary" />
-                  Send a Quick Message
-                </h3>
-                <div className="grid gap-4">
-                  <input type="text" placeholder="Your Name" className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-primary/50" />
-                  <input type="email" placeholder="Email Address" className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-primary/50" />
-                  <textarea placeholder="How can we help?" rows={4} className="bg-white/5 border border-white/5 rounded-3xl px-6 py-4 text-sm text-white focus:outline-none focus:border-primary/50 resize-none"></textarea>
-                  <button className="h-16 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-2xl hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all">Send Message</button>
                 </div>
              </div>
           </div>
