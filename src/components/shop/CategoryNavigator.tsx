@@ -12,6 +12,7 @@ interface Category {
   image_url?: string;
   description?: string;
   inventory_type: string;
+  parent_id?: string | null;
 }
 
 interface CategoryNavigatorProps {
