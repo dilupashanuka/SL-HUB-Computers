@@ -6,6 +6,8 @@ import { ShopSidebar } from '@/components/shop/ShopSidebar';
 import { MobileFilter } from '@/components/shop/MobileFilter';
 import { SortDropdown } from '@/components/shop/SortDropdown';
 
+import { InventoryHeader } from '@/components/shop/InventoryHeader';
+
 export const revalidate = 0;
 
 export default async function ProductsPage(props: {
@@ -18,9 +20,11 @@ export default async function ProductsPage(props: {
   
   const supabase = await createClient();
   const { data: categories } = await supabase.from('categories').select('*').order('name');
+  const { data: slides } = await supabase.from('inventory_slides').select('*').order('created_at', { ascending: false });
   
   let query = supabase.from('products').select('*');
   
+  // ... rest of query logic ...
   if (inventory) {
     query = query.eq('inventory_type', inventory);
   }
@@ -28,7 +32,6 @@ export default async function ProductsPage(props: {
   if (category) {
     const selectedCategory = categories?.find(c => c.slug === category);
     if (selectedCategory) {
-      // Get all subcategories recursively if needed, but for now 1 level is enough
       const children = categories?.filter(c => c.parent_id === selectedCategory.id) || [];
       const ids = [selectedCategory.id, ...children.map(c => c.id)];
       query = query.in('category_id', ids);
@@ -37,39 +40,20 @@ export default async function ProductsPage(props: {
     }
   }
 
-  // Handle sorting
   if (sort === 'price-low') query = query.order('price', { ascending: true });
   else if (sort === 'price-high') query = query.order('price', { ascending: false });
   else query = query.order('created_at', { ascending: false });
   
   const { data: products } = await query;
 
-  // Map products to ensure they have the right field names if needed
   const mappedProducts = products?.map(p => ({
     ...p,
-    title: p.name || p.title, // Handle both name and title if there's a discrepancy
+    title: p.name || p.title,
   })) || [];
 
   return (
     <div className="min-h-screen bg-slate-950 pb-32">
-      {/* Immersive Header */}
-      <div className="pt-40 pb-24 relative overflow-hidden">
-        <div className="glow-mesh absolute inset-0 opacity-50" />
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-6 py-2 backdrop-blur-md">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">SL HUB Tech Shop</span>
-            </div>
-            <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none">
-              Explore Our <span className="text-gradient">Premium</span> Inventory
-            </h1>
-            <p className="text-lg md:text-xl text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
-              Find the perfect machine for your needs. We stock only the most reliable brands with guaranteed islandwide warranty.
-            </p>
-          </div>
-        </div>
-      </div>
+      <InventoryHeader slides={slides || []} />
 
       <div className="container mx-auto px-4">
         {/* Modern Control Bar */}

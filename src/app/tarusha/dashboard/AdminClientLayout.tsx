@@ -66,6 +66,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
       label: 'INVENTORY & STORE',
       items: [
         { label: 'PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
+        { label: 'INVENTORY HEADER', href: '/tarusha/dashboard/inventory-header', icon: FileText },
         { label: 'ACCESSORIES', href: '/tarusha/dashboard/products?category=accessories', icon: Package },
         { label: 'CATEGORIES', href: '/tarusha/dashboard/categories', icon: Grid },
       ]
