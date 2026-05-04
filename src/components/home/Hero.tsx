@@ -65,11 +65,12 @@ export function Hero({ slides = [], settings }: HeroProps) {
                 muted
                 loop
                 playsInline
-                className="h-full w-full object-cover opacity-60"
+                className="h-full w-full object-cover opacity-90 transition-transform duration-[10000ms] ease-out scale-105"
               >
                 <source src={slide.video_url} type="video/mp4" />
               </video>
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-slate-950/20 to-transparent z-[1]" />
+              <div className="absolute inset-0 bg-slate-950/10 z-[1]" />
             </>
           ) : (
             <>
@@ -78,11 +79,12 @@ export function Hero({ slides = [], settings }: HeroProps) {
                 alt="Hero Background"
                 fill
                 sizes="100vw"
-                className="object-cover opacity-60"
+                className="object-cover opacity-90 transition-transform duration-[10000ms] ease-out scale-105"
                 priority={index === 0}
               />
-              {/* Reduced dark gradient here */}
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/30 to-transparent" />
+              {/* Softened dark gradient for better visibility */}
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-slate-950/20 to-transparent z-[1]" />
+              <div className="absolute inset-0 bg-slate-950/10 z-[1]" />
             </>
           )}
         </div>
