@@ -72,6 +72,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
       label: 'SITE SETTINGS',
       items: [
         { label: 'TECH REELS', href: '/tarusha/dashboard/reels', icon: Play },
+        { label: 'SERVICES MANAGER', href: '/tarusha/dashboard/services', icon: Settings },
         { label: 'FAQ MANAGER', href: '/tarusha/dashboard/faq', icon: HelpCircle },
         { label: 'SITE CONTENT', href: '/tarusha/dashboard/content', icon: FileText },
         { label: 'SITE CONFIG', href: '/tarusha/dashboard/settings', icon: Settings },

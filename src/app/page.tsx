@@ -298,22 +298,20 @@ export default async function Home() {
           </div>
         </div>
         
-        <div className="relative">
-          <div className="flex gap-8 overflow-x-auto px-[calc(50vw-640px)] pb-20 no-scrollbar snap-x scroll-px-4">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {featuredProductsWithCat?.map((product) => (
-              <div key={product.id} className="w-[300px] md:w-[400px] shrink-0 snap-start">
-                <Link href={`/products?id=${product.id}`} className="group block h-full">
-                  <div className="aspect-[4/5] relative rounded-[3rem] overflow-hidden glass border-white/5 group-hover:border-primary/50 transition-all duration-700">
-                    <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 768px) 300px, 400px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-                    <div className="absolute bottom-10 left-10 right-10">
-                       <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2 block">{product.categories?.name || 'Uncategorized'}</span>
-                       <h3 className="text-2xl font-black text-white leading-tight mb-4 group-hover:text-primary transition-colors">{product.name}</h3>
-                       <div className="text-xl font-bold text-white">Rs. {product.price.toLocaleString()}</div>
-                    </div>
+              <Link href={`/products?id=${product.id}`} key={product.id} className="group block">
+                <div className="aspect-[4/5] relative rounded-[2rem] overflow-hidden glass border-white/5 group-hover:border-primary/50 transition-all duration-700">
+                  <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6">
+                     <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2 block">{product.categories?.name || 'Uncategorized'}</span>
+                     <h3 className="text-xl font-black text-white leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">{product.name}</h3>
+                     <div className="text-lg font-bold text-white">Rs. {product.price.toLocaleString()}</div>
                   </div>
-                </Link>
-              </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
