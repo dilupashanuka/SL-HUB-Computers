@@ -180,6 +180,16 @@ export default async function SettingsPage() {
                     className="bg-white/5 border-white/10 text-white font-mono" 
                   />
                 </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Business Email</Label>
+                  <Input 
+                    name="email" 
+                    type="email"
+                    defaultValue={settings?.email || 'slhub9@gmail.com'} 
+                    className="bg-white/5 border-white/10 text-white font-mono" 
+                    placeholder="your@email.com"
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>

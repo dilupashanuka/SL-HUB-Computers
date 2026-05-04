@@ -6,6 +6,7 @@ interface FooterProps {
     site_name: string;
     phone_number: string;
     address: string;
+    email?: string;
     facebook_url?: string;
     instagram_url?: string;
     tiktok_url?: string;
@@ -80,7 +81,9 @@ export function Footer({ settings }: FooterProps) {
             </li>
             <li className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-primary shrink-0" />
-              <span>slhub9@gmail.com</span>
+              <a href={`mailto:${settings?.email || 'slhub9@gmail.com'}`} className="hover:text-white transition-colors">
+                {settings?.email || 'slhub9@gmail.com'}
+              </a>
             </li>
           </ul>
         </div>
