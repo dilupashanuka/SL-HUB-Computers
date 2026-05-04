@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,8 +11,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { upsertService } from '../actions';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 export default function NewServicePage() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    const result = await upsertService(formData);
+    
+    if (result.success) {
+      toast.success('Service created successfully');
+      router.push('/tarusha/dashboard/services');
+    } else {
+      toast.error(result.error || 'Failed to create service');
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
@@ -26,7 +48,7 @@ export default function NewServicePage() {
           <CardTitle>Service Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <form action={upsertService} className="space-y-4">
+          <form action={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Title *</Label>
               <Input id="title" name="title" required placeholder="e.g. Phone Unlocking" />
@@ -60,7 +82,14 @@ export default function NewServicePage() {
             </div>
 
             <div className="pt-4 flex justify-end">
-              <Button type="submit">Save Service</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : 'Save Service'}
+              </Button>
             </div>
           </form>
         </CardContent>
