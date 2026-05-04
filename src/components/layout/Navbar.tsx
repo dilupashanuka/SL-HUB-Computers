@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Menu, X, MessageCircle, Search, ShoppingCart, User, Cpu, Smartphone, Monitor, ChevronDown, ChevronRight, ArrowRight } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { SearchOverlay } from './SearchOverlay';
+import { WishlistNavButton } from './WishlistNavButton';
 
 const NAV_LINKS = [
   { 
@@ -117,15 +118,15 @@ export function Navbar({ settings }: NavbarProps) {
               
               {link.submenu && (
                 <div className="absolute top-full left-0 w-64 pt-4 opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-300 transform translate-y-2 group-hover/item:translate-y-0">
-                  <div className="glass rounded-[2rem] p-4 shadow-2xl border border-white/10 overflow-hidden">
-                    <div className="grid gap-2">
+                  <div className="bg-slate-900 border border-white/10 rounded-[2rem] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden">
+                    <div className="grid gap-1">
                       {link.submenu.map((sub) => (
                         <Link 
                           key={sub.label}
                           href={sub.href}
-                          className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 text-slate-400 hover:text-white transition-all group/sub"
+                          className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/10 text-slate-300 hover:text-white transition-all group/sub"
                         >
-                          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover/sub:bg-primary group-hover/sub:text-primary-foreground transition-all">
+                          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover/sub:bg-primary group-hover/sub:border-primary group-hover/sub:text-primary-foreground transition-all">
                             <sub.icon className="w-5 h-5" />
                           </div>
                           <span className="text-sm font-bold uppercase tracking-widest">{sub.label}</span>
@@ -147,6 +148,8 @@ export function Navbar({ settings }: NavbarProps) {
           >
             <Search className="w-5 h-5" />
           </button>
+
+          <WishlistNavButton />
 
           <Link 
             href="/tarusha" 
