@@ -4,6 +4,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ShieldCheck, Trophy, Target, Heart, Sparkles, ChevronRight, MessageCircle } from 'lucide-react';
 import { Metadata } from 'next';
+import { createClient } from '@/utils/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Our Story | SL HUB COMPUTER',
@@ -11,7 +12,12 @@ export const metadata: Metadata = {
   keywords: 'SL HUB story, about SL HUB COMPUTER, computer shop Deiyandara, tech retail Sri Lanka',
 };
 
-export default function AboutPage() {
+
+
+export default async function AboutPage() {
+  const supabase = await createClient();
+  const { data: settings } = await supabase.from('site_settings').select('about_text').single();
+
   return (
     <div className="min-h-screen bg-slate-950 pb-40">
       {/* Header Area */}
@@ -59,15 +65,21 @@ export default function AboutPage() {
               <div className="w-20 h-1 bg-primary rounded-full" />
             </div>
             <div className="space-y-6 text-slate-400 font-medium text-lg leading-relaxed">
-              <p>
-                SL HUB COMPUTER was established with a clear mission: to bring high-quality, reliable, and affordable technology to the people of Deiyandara and beyond.
-              </p>
-              <p>
-                What started as a specialized venture for Korean branded desktops has evolved into a full-scale tech ecosystem. We now stock everything from the latest flagship smartphones to professional-grade server components.
-              </p>
-              <p>
-                Our philosophy is simple: **Quality without Compromise**. Every unit that enters our inventory undergoes a rigorous 24-point hardware inspection before it reaches your hands.
-              </p>
+              {settings?.about_text ? (
+                <div className="whitespace-pre-wrap">{settings.about_text}</div>
+              ) : (
+                <>
+                  <p>
+                    SL HUB COMPUTER was established with a clear mission: to bring high-quality, reliable, and affordable technology to the people of Deiyandara and beyond.
+                  </p>
+                  <p>
+                    What started as a specialized venture for Korean branded desktops has evolved into a full-scale tech ecosystem. We now stock everything from the latest flagship smartphones to professional-grade server components.
+                  </p>
+                  <p>
+                    Our philosophy is simple: **Quality without Compromise**. Every unit that enters our inventory undergoes a rigorous 24-point hardware inspection before it reaches your hands.
+                  </p>
+                </>
+              )}
             </div>
             <div className="pt-6">
               <Link href="/products" className="inline-flex h-16 items-center px-10 bg-white text-slate-950 font-black uppercase tracking-widest rounded-full hover:scale-105 transition-all">

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { createService } from '../actions';
+import { upsertService } from '../actions';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +26,7 @@ export default function NewServicePage() {
           <CardTitle>Service Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <form action={createService} className="space-y-4">
+          <form action={upsertService} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Title *</Label>
               <Input id="title" name="title" required placeholder="e.g. Phone Unlocking" />

@@ -3,6 +3,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Metadata } from 'next';
+import { ContactForm } from './ContactForm';
 
 export const metadata: Metadata = {
   title: 'Contact Us | SL HUB COMPUTER',
@@ -79,8 +80,10 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Map Area */}
+          {/* Map Area & Contact Form */}
           <div className="space-y-10">
+            <ContactForm />
+
              <div className="aspect-[4/5] lg:aspect-square rounded-[4rem] overflow-hidden glass border-white/10 group shadow-2xl relative">
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15873.344605929424!2d80.58434775!3d6.08523315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae1468165d78575%3A0x633e7f4c34a2e55a!2sDeiyandara!5e0!3m2!1sen!2slk!4v1714647300000!5m2!1sen!2slk" 

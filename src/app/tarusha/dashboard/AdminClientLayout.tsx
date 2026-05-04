@@ -16,10 +16,7 @@ import {
   Mail, 
   HelpCircle, 
   FileText,
-  Play,
-  Video,
   Trophy,
-  Sparkles,
   Menu,
   X,
   Smartphone,
@@ -48,9 +45,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
     {
       label: 'HOME PAGE MANAGEMENT',
       items: [
-        { label: 'HERO SHOWCASE', href: '/tarusha/dashboard/hero', icon: ImageIcon },
-        { label: 'HERO VIDEOS', href: '/tarusha/dashboard/hero-videos', icon: Video },
-        { label: 'HERO SUB POSTS', href: '/tarusha/dashboard/hero-sub-posts', icon: Sparkles },
+        { label: 'HERO MANAGER', href: '/tarusha/dashboard/hero', icon: ImageIcon },
         { label: 'PC BUILDER', href: '/tarusha/dashboard/pc-builder', icon: Cpu },
         { label: 'GLOBAL PARTNERS', href: '/tarusha/dashboard/partners', icon: Trophy },
       ]
@@ -71,11 +66,9 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
     {
       label: 'SITE SETTINGS',
       items: [
-        { label: 'TECH REELS', href: '/tarusha/dashboard/reels', icon: Play },
         { label: 'SERVICES MANAGER', href: '/tarusha/dashboard/services', icon: Settings },
         { label: 'FAQ MANAGER', href: '/tarusha/dashboard/faq', icon: HelpCircle },
-        { label: 'SITE CONTENT', href: '/tarusha/dashboard/content', icon: FileText },
-        { label: 'SITE CONFIG', href: '/tarusha/dashboard/settings', icon: Settings },
+        { label: 'GLOBAL CONFIG', href: '/tarusha/dashboard/settings', icon: Settings },
       ]
     },
     {
@@ -87,6 +80,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
       ]
     }
   ];
+
 
   return (
     <div className="flex min-h-screen bg-[#050811] text-slate-200 selection:bg-blue-500/30">

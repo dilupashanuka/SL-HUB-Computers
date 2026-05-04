@@ -49,7 +49,17 @@ export default async function SettingsPage() {
                   <Textarea 
                     name="address" 
                     defaultValue={settings?.address || 'Deiyandara, Sri Lanka'} 
-                    className="bg-white/5 border-white/10 text-white h-24 resize-none" 
+                    className="bg-white/5 border-white/10 text-white h-20 resize-none" 
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">About Us Story</Label>
+                  <Textarea 
+                    name="about_text" 
+                    defaultValue={settings?.about_text || ''} 
+                    placeholder="Tell your customers about your business history and mission..."
+                    className="bg-white/5 border-white/10 text-white h-40 resize-none" 
                   />
                 </div>
 

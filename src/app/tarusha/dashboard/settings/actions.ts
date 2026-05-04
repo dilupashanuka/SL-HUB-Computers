@@ -13,6 +13,7 @@ export async function updateSettings(formData: FormData) {
   const phone_number = formData.get('phone_number') as string;
   const email = formData.get('email') as string;
   const address = formData.get('address') as string;
+  const about_text = formData.get('about_text') as string;
   const maintenance_mode = formData.get('maintenance_mode') === 'on';
   const logoFile = formData.get('logo') as File;
   
@@ -74,6 +75,7 @@ export async function updateSettings(formData: FormData) {
     phone_number,
     email,
     address,
+    about_text,
     maintenance_mode,
     facebook_url,
     instagram_url,

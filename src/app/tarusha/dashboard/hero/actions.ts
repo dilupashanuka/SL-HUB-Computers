@@ -10,8 +10,10 @@ export async function updateHeroGlobalText(formData: FormData) {
   const subtitle = formData.get('subtitle') as string;
   const video_url = formData.get('video_url') as string;
 
+  const { data: existingSettings } = await supabase.from('site_settings').select('id').single();
+  
   const { error } = await supabase.from('site_settings').upsert({
-    id: 'settings', // Assuming 'settings' is the ID for global config
+    id: existingSettings?.id || 'settings', 
     hero_title: title,
     hero_subtitle: subtitle,
     hero_video_url: video_url

@@ -12,14 +12,10 @@ import { HeroUploadForm } from './HeroUploadForm';
 export default async function HeroShowcasePage() {
   const supabase = await createClient();
   const { data: slides } = await supabase.from('hero_slides').select('*').order('created_at', { ascending: false });
-  const { data: settings } = await supabase.from('site_settings').select('*').eq('id', 'settings').single();
+  const { data: settings } = await supabase.from('site_settings').select('*').single();
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-extrabold tracking-tight text-white">Hero Management</h1>
-        <p className="text-slate-400 font-medium">Manage the global hero text and rotate dynamic background media.</p>
-      </div>
 
       {/* Global Hero Settings */}
       <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md">
