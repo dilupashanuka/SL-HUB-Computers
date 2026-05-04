@@ -19,15 +19,18 @@ export default async function PCBuilderPage() {
     .eq('in_stock', true)
     .order('title');
 
-  // Fetch admin-configured component → category mappings
-  const { data: mappings } = await supabase
-    .from('pc_component_type_categories')
-    .select('component_type, category_id, categories(name)');
-
-  // Convert to a lookup map: { CPU: 'uuid-xxx', GPU: 'uuid-yyy', ... }
-  const categoryMapping: Record<string, string | null> = {};
-  for (const m of mappings || []) {
-    categoryMapping[m.component_type] = m.category_id;
+  // Fetch admin-configured component → category mappings (safe fallback)
+  let categoryMapping: Record<string, string | null> = {};
+  try {
+    const { data: mappings } = await supabase
+      .from('pc_component_type_categories')
+      .select('component_type, category_id');
+    for (const m of mappings || []) {
+      categoryMapping[m.component_type] = m.category_id;
+    }
+  } catch {
+    // Table may not exist yet — use empty mapping (show all products)
+    categoryMapping = {};
   }
 
   return (

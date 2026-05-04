@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from 'react';
-import { Cpu, Monitor, HardDrive, Zap, Square, Component, LayoutGrid, CheckCircle2, ChevronRight, ChevronLeft, MessageCircle, Star, Package, X, Info } from 'lucide-react';
+import { Cpu, Monitor, HardDrive, Zap, Square, Component, LayoutGrid, CheckCircle2, ChevronRight, ChevronLeft, MessageCircle, Star, Package, X, Info, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -49,7 +49,6 @@ interface Props {
 
 export function PCBuilderClient({ preBuilds, products, categoryMapping }: Props) {
   const [tab, setTab] = useState<'prebuilt' | 'custom'>('prebuilt');
-  const [selectedBuild, setSelectedBuild] = useState<PreBuild | null>(null);
   const [step, setStep] = useState(0);
   const [selected, setSelected] = useState<Record<string, Product | null>>({});
   const [detailProduct, setDetailProduct] = useState<Product | null>(null);
@@ -97,8 +96,8 @@ export function PCBuilderClient({ preBuilds, products, categoryMapping }: Props)
             {preBuilds.map(build => {
               const s = CAT_STYLES[build.category] || CAT_STYLES.gaming;
               return (
-                <div key={build.id} onClick={() => setSelectedBuild(build)}
-                  className={cn("group relative bg-slate-900/60 rounded-[2.5rem] overflow-hidden border transition-all duration-500 hover:scale-[1.02] cursor-pointer",
+                <Link key={build.id} href={`/pc-builder/${build.id}`}
+                  className={cn("group relative bg-slate-900/60 rounded-[2.5rem] overflow-hidden border transition-all duration-500 hover:scale-[1.02] block",
                     build.is_featured ? "border-primary/30 shadow-xl shadow-primary/10" : "border-white/5 hover:border-white/15")}>
                   <div className="aspect-video relative bg-slate-800 overflow-hidden">
                     {build.image_url
@@ -125,11 +124,11 @@ export function PCBuilderClient({ preBuilds, products, categoryMapping }: Props)
                         <p className="text-xl font-black text-white">{build.pc_build_components?.length || 0}</p>
                       </div>
                     </div>
-                    <div className="w-full h-10 bg-primary/10 border border-primary/20 text-primary hover:bg-primary hover:text-white font-black uppercase tracking-widest text-xs rounded-2xl transition-all flex items-center justify-center">
-                      View Full Specs →
+                    <div className="w-full h-10 bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-white font-black uppercase tracking-widest text-xs rounded-2xl transition-all flex items-center justify-center gap-2">
+                      <ExternalLink className="w-3.5 h-3.5" /> View Full Specs
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
@@ -310,69 +309,6 @@ export function PCBuilderClient({ preBuilds, products, categoryMapping }: Props)
         </div>
       )}
 
-      {/* ── BUILD DETAIL MODAL ── */}
-      {selectedBuild && (
-        <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setSelectedBuild(null)} />
-          <div className="relative w-full max-w-3xl bg-slate-900 border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setSelectedBuild(null)}
-              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all">
-              <X className="w-5 h-5" />
-            </button>
-            <div className="aspect-video relative bg-slate-800 overflow-hidden">
-              {selectedBuild.image_url
-                ? <Image src={selectedBuild.image_url} alt={selectedBuild.name} fill className="object-cover" />
-                : <div className="absolute inset-0 flex items-center justify-center"><Cpu className="w-20 h-20 text-slate-700" /></div>}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
-            </div>
-            <div className="p-8 space-y-6">
-              <div>
-                <div className="flex gap-2 mb-3">
-                  {(() => { const s = CAT_STYLES[selectedBuild.category] || CAT_STYLES.gaming; return (
-                    <span className={cn("px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border", s.border, s.text, s.bg)}>{s.label}</span>
-                  );})()}
-                  {selectedBuild.badge_text && <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border border-yellow-400/30 bg-yellow-400/10 text-yellow-400">{selectedBuild.badge_text}</span>}
-                </div>
-                <h2 className="text-3xl font-black text-white uppercase tracking-tight">{selectedBuild.name}</h2>
-                {selectedBuild.description && <p className="text-slate-400 mt-2">{selectedBuild.description}</p>}
-              </div>
-              {selectedBuild.pc_build_components?.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-[10px] text-primary font-black uppercase tracking-widest">Included Components</p>
-                  {selectedBuild.pc_build_components.map(comp => (
-                    <div key={comp.id} className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                          <Cpu className="w-4 h-4 text-blue-400" />
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-blue-400 font-black uppercase tracking-widest">{comp.component_type}</p>
-                          <p className="text-sm font-bold text-white">{comp.products?.title || comp.custom_name || 'TBD'}</p>
-                        </div>
-                      </div>
-                      <p className="text-sm font-black text-white flex-shrink-0">
-                        Rs. {((comp.products?.price || comp.custom_price || 0) * comp.quantity).toLocaleString()}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="flex items-center justify-between p-6 rounded-[2rem] bg-gradient-to-br from-primary/20 to-transparent border border-primary/20">
-                <div>
-                  <p className="text-[10px] text-primary font-black uppercase tracking-widest mb-1">Total Price</p>
-                  <p className="text-3xl font-black text-white">{selectedBuild.total_price ? `Rs. ${Number(selectedBuild.total_price).toLocaleString()}` : 'Contact Us'}</p>
-                </div>
-                <Link
-                  href={`https://wa.me/94710678944?text=${encodeURIComponent(`Hi SL HUB! I'm interested in the "${selectedBuild.name}" pre-built PC.\nPrice: Rs. ${Number(selectedBuild.total_price).toLocaleString()}\nPlease confirm availability!`)}`}
-                  target="_blank"
-                  className="flex items-center gap-2 px-6 py-4 bg-primary text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(59,130,246,0.4)]">
-                  <MessageCircle className="w-4 h-4" /> Order on WhatsApp
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
