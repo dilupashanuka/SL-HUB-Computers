@@ -6,7 +6,7 @@ import { Cpu } from 'lucide-react';
 export const revalidate = 0;
 
 export default async function PCBuilderPage() {
-  const supabaseAdmin = createAdminClient();
+  const supabase = await createClient();
 
   // Safe fetch — tables may not exist yet
   let preBuilds: any[] = [];
@@ -14,7 +14,7 @@ export default async function PCBuilderPage() {
   let categoryMapping: Record<string, string | null> = {};
 
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await supabase
       .from('pc_builds')
       .select('*, pc_build_components(*, products(id, title, price, image_url, brand))')
       .eq('is_active', true)
@@ -23,7 +23,7 @@ export default async function PCBuilderPage() {
   } catch (e) { preBuilds = []; }
 
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await supabase
       .from('products')
       .select('id, title, price, image_url, brand, category, description, specifications')
       .eq('in_stock', true)
@@ -32,7 +32,7 @@ export default async function PCBuilderPage() {
   } catch (e) { products = []; }
 
   try {
-    const { data: mappings } = await supabaseAdmin
+    const { data: mappings } = await supabase
       .from('pc_component_type_categories')
       .select('component_type, category_id');
     for (const m of mappings || []) {

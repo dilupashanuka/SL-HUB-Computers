@@ -16,9 +16,9 @@ const CAT_STYLES: Record<string, { border: string; text: string; bg: string; lab
 
 export default async function PreBuildDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabaseAdmin = createAdminClient();
+  const supabase = await createClient();
 
-  const { data: build } = await supabaseAdmin
+  const { data: build } = await supabase
     .from('pc_builds')
     .select(`
       *,
