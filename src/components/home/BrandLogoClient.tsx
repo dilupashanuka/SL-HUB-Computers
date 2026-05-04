@@ -23,7 +23,7 @@ export function BrandLogoClient({ name, logo }: { name: string, logo?: string })
       {/* Image — only mount when we have a URL and no error yet */}
       {logo && !hasError && (
         <div
-          className={`absolute inset-0 filter grayscale hover:grayscale-0 transition-all duration-700 ${
+          className={`absolute inset-0 transition-all duration-700 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         >
