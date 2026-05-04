@@ -10,15 +10,24 @@ interface AdminMediaUploadProps {
   multiple?: boolean;
   required?: boolean;
   accept?: string;
+  initialImages?: string | string[];
 }
 
 export function AdminMediaUpload({ 
   name, 
   multiple = false, 
   required = false,
-  accept = "image/*,video/*"
+  accept = "image/*,video/*",
+  initialImages
 }: AdminMediaUploadProps) {
-  const [previews, setPreviews] = useState<{url: string, isVideo: boolean}[]>([]);
+  const [previews, setPreviews] = useState<{url: string, isVideo: boolean}[]>(() => {
+    if (!initialImages) return [];
+    const images = Array.isArray(initialImages) ? initialImages : [initialImages];
+    return images.map(url => ({
+      url,
+      isVideo: url.match(/\.(mp4|webm|ogg|mov)$|^data:video/i) !== null
+    }));
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
