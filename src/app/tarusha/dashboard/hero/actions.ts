@@ -4,6 +4,25 @@ import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { revalidatePath } from 'next/cache';
 
+export async function updateHeroGlobalText(formData: FormData) {
+  const supabase = await createClient();
+  const title = formData.get('title') as string;
+  const subtitle = formData.get('subtitle') as string;
+  const video_url = formData.get('video_url') as string;
+
+  const { error } = await supabase.from('site_settings').upsert({
+    id: 'settings', // Assuming 'settings' is the ID for global config
+    hero_title: title,
+    hero_subtitle: subtitle,
+    hero_video_url: video_url
+  }, { onConflict: 'id' });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/tarusha/dashboard/hero');
+  revalidatePath('/');
+}
+
 export async function uploadHeroSlides(formData: FormData) {
   const supabase = await createClient();
   const supabaseAdmin = createAdminClient();
@@ -29,13 +48,11 @@ export async function uploadHeroSlides(formData: FormData) {
       .from('hero')
       .getPublicUrl(filePath);
 
-    // Insert into DB
+    // Insert into DB without slide-specific text
     await supabase
       .from('hero_slides')
       .insert([{ 
-        image_url: publicUrl,
-        title: 'SL HUB COMPUTER',
-        subtitle: 'The New Experience of Technology'
+        image_url: publicUrl
       }]);
   }
 
@@ -77,12 +94,10 @@ export async function updateHeroSlide(formData: FormData) {
   const supabase = await createClient();
   const supabaseAdmin = createAdminClient();
   const id = formData.get('id') as string;
-  const title = formData.get('title') as string;
-  const subtitle = formData.get('subtitle') as string;
   const video_url = formData.get('video_url') as string;
   const image = formData.get('image') as File;
 
-  let updateData: any = { title, subtitle, video_url };
+  let updateData: any = { video_url };
 
   if (image && image.size > 0) {
     const fileExt = image.name.split('.').pop();
@@ -113,3 +128,4 @@ export async function updateHeroSlide(formData: FormData) {
   revalidatePath('/tarusha/dashboard/hero');
   revalidatePath('/');
 }
+
