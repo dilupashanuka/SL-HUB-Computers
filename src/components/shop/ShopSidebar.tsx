@@ -142,7 +142,15 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
               value={priceRange} 
               max={500000} 
               step={1000} 
-              className="[&_[role=slider]]:bg-primary [&_[role=slider]]:border-primary [&_[role=slider]]:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+              className={cn(
+                "w-full",
+                // Track styling
+                "[&_[data-slot=slider-track]]:bg-slate-800",
+                // Range indicator styling
+                "[&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-range]]:shadow-[0_0_10px_rgba(59,130,246,0.3)]",
+                // Thumb styling
+                "[&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:border-primary [&_[data-slot=slider-thumb]]:shadow-[0_0_15px_rgba(59,130,246,0.6)] [&_[data-slot=slider-thumb]]:size-4"
+              )}
               onValueChange={(val) => setPriceRange(val as number[])}
             />
           </div>
