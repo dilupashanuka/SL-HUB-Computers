@@ -20,6 +20,10 @@ export async function updateSettings(formData: FormData) {
   const instagram_url = formData.get('instagram_url') as string;
   const tiktok_url = formData.get('tiktok_url') as string;
   const youtube_url = formData.get('youtube_url') as string;
+  const twitter_url = formData.get('twitter_url') as string;
+  const discord_url = formData.get('discord_url') as string;
+  const reddit_url = formData.get('reddit_url') as string;
+  const twitch_url = formData.get('twitch_url') as string;
   
   const hero_title = formData.get('hero_title') as string;
   const hero_subtitle = formData.get('hero_subtitle') as string;
@@ -75,6 +79,10 @@ export async function updateSettings(formData: FormData) {
     instagram_url,
     tiktok_url,
     youtube_url,
+    twitter_url,
+    discord_url,
+    reddit_url,
+    twitch_url,
     hero_title,
     hero_subtitle,
     hero_video_url,

@@ -112,9 +112,9 @@ export default async function SettingsPage() {
             <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <Share2 className="w-5 h-5 text-purple-400" /> Social Presence
+                  <Share2 className="w-5 h-5 text-purple-400" /> Social Media & Contact Links
                 </CardTitle>
-                <CardDescription className="text-slate-500">Connect your platform with social media channels.</CardDescription>
+                <CardDescription className="text-slate-500">Manage all your external social media and community links.</CardDescription>
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -150,6 +150,42 @@ export default async function SettingsPage() {
                     name="youtube_url" 
                     defaultValue={settings?.youtube_url || ''} 
                     placeholder="https://youtube.com/..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">X (Twitter) URL</Label>
+                  <Input 
+                    name="twitter_url" 
+                    defaultValue={settings?.twitter_url || ''} 
+                    placeholder="https://x.com/..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Discord Invite URL</Label>
+                  <Input 
+                    name="discord_url" 
+                    defaultValue={settings?.discord_url || ''} 
+                    placeholder="https://discord.gg/..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Reddit URL</Label>
+                  <Input 
+                    name="reddit_url" 
+                    defaultValue={settings?.reddit_url || ''} 
+                    placeholder="https://reddit.com/r/..."
+                    className="bg-white/5 border-white/10 text-white" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Twitch URL</Label>
+                  <Input 
+                    name="twitch_url" 
+                    defaultValue={settings?.twitch_url || ''} 
+                    placeholder="https://twitch.tv/..."
                     className="bg-white/5 border-white/10 text-white" 
                   />
                 </div>
