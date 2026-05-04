@@ -323,7 +323,13 @@ export default async function Home() {
       <TrendingAccessories products={accessories?.map(a => ({ ...a, category: a.categories })) || []} />
 
       {/* PC Builder CTA - Dynamic Slider */}
-      <PCBuilderSlider slides={pcBuilderSlides || []} />
+      <PCBuilderSlider 
+        slides={pcBuilderSlides || []} 
+        settings={{
+          pc_builder_title: settingsData?.pc_builder_title,
+          pc_builder_subtitle: settingsData?.pc_builder_subtitle
+        }}
+      />
 
       {/* FAQ Section - High Trust */}
       <section className="py-40 border-t border-white/5">

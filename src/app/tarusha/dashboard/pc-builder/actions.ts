@@ -3,10 +3,25 @@
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-export async function addPCSlide(formData: FormData) {
+export async function updatePCBuilderGlobalText(formData: FormData) {
   const supabase = await createClient();
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
+
+  const { error } = await supabase.from('site_settings').upsert({
+    id: 'settings',
+    pc_builder_title: title,
+    pc_builder_subtitle: description
+  }, { onConflict: 'id' });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/tarusha/dashboard/pc-builder');
+  revalidatePath('/');
+}
+
+export async function addPCSlide(formData: FormData) {
+  const supabase = await createClient();
   const files = formData.get('images') as unknown as File[];
   
   const logoFiles = Array.isArray(files) ? files : [files];
@@ -29,8 +44,6 @@ export async function addPCSlide(formData: FormData) {
       .getPublicUrl(fileName);
 
     await supabase.from('pc_builder_slides').insert([{
-      title: title || 'New PC Build',
-      description: description || '',
       image_url: publicUrl,
       is_active: true
     }]);
@@ -58,8 +71,11 @@ export async function deletePCSlide(formData: FormData) {
   revalidatePath('/');
 }
 
-export async function togglePCSlide(id: string, currentStatus: boolean) {
+export async function togglePCSlide(formData: FormData) {
   const supabase = await createClient();
+  const id = formData.get('id') as string;
+  const currentStatus = formData.get('currentStatus') === 'true';
+  
   await supabase.from('pc_builder_slides').update({ is_active: !currentStatus }).eq('id', id);
   revalidatePath('/tarusha/dashboard/pc-builder');
   revalidatePath('/');
@@ -68,11 +84,9 @@ export async function togglePCSlide(id: string, currentStatus: boolean) {
 export async function updatePCSlide(formData: FormData) {
   const supabase = await createClient();
   const id = formData.get('id') as string;
-  const title = formData.get('title') as string;
-  const description = formData.get('description') as string;
   const image = formData.get('image') as File;
 
-  let updateData: any = { title, description };
+  let updateData: any = {};
 
   if (image && image.size > 0) {
     const fileName = `${Date.now()}-${image.name}`;
@@ -88,10 +102,13 @@ export async function updatePCSlide(formData: FormData) {
     }
   }
 
-  await supabase.from('pc_builder_slides')
-    .update(updateData)
-    .eq('id', id);
+  if (Object.keys(updateData).length > 0) {
+    await supabase.from('pc_builder_slides')
+      .update(updateData)
+      .eq('id', id);
+  }
 
   revalidatePath('/tarusha/dashboard/pc-builder');
   revalidatePath('/');
 }
+
