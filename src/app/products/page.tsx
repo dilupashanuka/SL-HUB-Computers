@@ -43,6 +43,9 @@ export default async function ProductsPage(props: {
 
   if (sort === 'price-low') query = query.order('price', { ascending: true });
   else if (sort === 'price-high') query = query.order('price', { ascending: false });
+  else if (sort === 'oldest') query = query.order('created_at', { ascending: true });
+  else if (sort === 'name-az') query = query.order('name', { ascending: true });
+  else if (sort === 'name-za') query = query.order('name', { ascending: false });
   else query = query.order('created_at', { ascending: false });
   
   const { data: products } = await query;
@@ -70,14 +73,9 @@ export default async function ProductsPage(props: {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-6">
              <MobileFilter currentCategory={category} categories={categories || []} />
-             <div className="hidden sm:flex items-center gap-2 bg-white/5 rounded-2xl p-1 border border-white/5">
-              <button className="p-3 rounded-xl bg-primary text-primary-foreground shadow-lg"><Grid className="w-4 h-4" /></button>
-              <button className="p-3 rounded-xl text-slate-500 hover:text-white transition-all"><List className="w-4 h-4" /></button>
-            </div>
-            
-            <SortDropdown currentSort={sort} />
+             <SortDropdown currentSort={sort} />
           </div>
         </div>
 

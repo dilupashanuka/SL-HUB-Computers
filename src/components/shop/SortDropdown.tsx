@@ -22,15 +22,22 @@ export function SortDropdown({ currentSort }: { currentSort: string }) {
   };
 
   return (
-    <Select value={currentSort || ''} onValueChange={handleSortChange}>
-      <SelectTrigger className="w-[200px] h-14 bg-white/5 border-white/10 text-xs font-black uppercase tracking-widest text-slate-300 hover:text-white rounded-2xl focus:ring-0 focus:ring-offset-0">
-        <SelectValue placeholder="Sort By" />
-      </SelectTrigger>
-      <SelectContent className="bg-slate-900 border-white/10 text-white rounded-2xl">
-        <SelectItem value="latest" className="focus:bg-primary focus:text-white uppercase text-[10px] font-black tracking-widest cursor-pointer">Newest First</SelectItem>
-        <SelectItem value="price-low" className="focus:bg-primary focus:text-white uppercase text-[10px] font-black tracking-widest cursor-pointer">Price: Low-High</SelectItem>
-        <SelectItem value="price-high" className="focus:bg-primary focus:text-white uppercase text-[10px] font-black tracking-widest cursor-pointer">Price: High-Low</SelectItem>
-      </SelectContent>
-    </Select>
+    <div className="flex items-center gap-3">
+      <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] hidden sm:block">Sort By</span>
+      <Select value={currentSort || 'latest'} onValueChange={handleSortChange}>
+        <SelectTrigger className="w-[200px] h-12 bg-slate-900 border-white/5 text-[10px] font-black uppercase tracking-widest text-white hover:border-primary/50 rounded-xl focus:ring-0 focus:ring-offset-0 transition-all shadow-xl">
+          <SelectValue placeholder="Newest First" />
+        </SelectTrigger>
+        <SelectContent className="bg-slate-950 border-white/10 text-white rounded-2xl p-1">
+          <SelectItem value="latest" className="rounded-lg focus:bg-primary focus:text-white uppercase text-[9px] font-black tracking-widest cursor-pointer py-3">Newest First</SelectItem>
+          <SelectItem value="oldest" className="rounded-lg focus:bg-primary focus:text-white uppercase text-[9px] font-black tracking-widest cursor-pointer py-3">Oldest First</SelectItem>
+          <SelectItem value="price-low" className="rounded-lg focus:bg-primary focus:text-white uppercase text-[9px] font-black tracking-widest cursor-pointer py-3">Price: Low to High</SelectItem>
+          <SelectItem value="price-high" className="rounded-lg focus:bg-primary focus:text-white uppercase text-[9px] font-black tracking-widest cursor-pointer py-3">Price: High to Low</SelectItem>
+          <SelectItem value="name-az" className="rounded-lg focus:bg-primary focus:text-white uppercase text-[9px] font-black tracking-widest cursor-pointer py-3">Name: A to Z</SelectItem>
+          <SelectItem value="name-za" className="rounded-lg focus:bg-primary focus:text-white uppercase text-[9px] font-black tracking-widest cursor-pointer py-3">Name: Z to A</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
+
