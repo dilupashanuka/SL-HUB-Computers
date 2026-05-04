@@ -23,6 +23,7 @@ export function Footer({ settings }: FooterProps) {
   const address  = settings?.address || 'Deiyandara, Sri Lanka';
 
   const socials = [
+    { label: 'WA',  url: `https://wa.me/${waNumber}`, color: 'hover:bg-green-500' },
     { label: 'FB',  url: settings?.facebook_url,  color: 'hover:bg-blue-600' },
     { label: 'IG',  url: settings?.instagram_url, color: 'hover:bg-pink-600' },
     { label: 'TT',  url: settings?.tiktok_url,    color: 'hover:bg-slate-100 hover:text-black' },
@@ -122,10 +123,15 @@ export function Footer({ settings }: FooterProps) {
               <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
                 <MapPin className="w-3.5 h-3.5" />
               </div>
-              <div>
+              <a 
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-white transition-colors"
+              >
                 <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-0.5">Location</p>
                 <p className="text-sm font-bold">{address}</p>
-              </div>
+              </a>
             </li>
           </ul>
         </div>
@@ -158,6 +164,23 @@ export function Footer({ settings }: FooterProps) {
             <span className="text-xs font-black uppercase tracking-widest">Chat Now</span>
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </Link>
+        </div>
+      </div>
+
+      {/* Trust & Payment Section */}
+      <div className="container mx-auto px-4 py-8 border-t border-white/5 flex flex-wrap items-center justify-between gap-8">
+        <div className="flex items-center gap-6 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mr-2">Secure Payments:</div>
+          <span className="text-xs font-black text-white border border-white/10 px-2 py-1 rounded">VISA</span>
+          <span className="text-xs font-black text-white border border-white/10 px-2 py-1 rounded">MASTER</span>
+          <span className="text-xs font-black text-white border border-white/10 px-2 py-1 rounded">KOKO</span>
+          <span className="text-xs font-black text-white border border-white/10 px-2 py-1 rounded">BANK TRANSFER</span>
+        </div>
+
+        <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
+          <Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link>
+          <Link href="/warranty" className="hover:text-primary transition-colors">Warranty Policy</Link>
         </div>
       </div>
 
