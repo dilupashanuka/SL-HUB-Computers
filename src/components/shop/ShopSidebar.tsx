@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useCallback, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronDown, Filter, RotateCcw, ShieldCheck, ArrowLeft, LayoutGrid, Cpu, Smartphone, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,14 +14,42 @@ interface ShopSidebarProps {
 
 export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const currentInventory = searchParams.get('inventory');
-  const [priceRange, setPriceRange] = useState([0, 500000]);
+  
+  const initialMin = Number(searchParams.get('min')) || 0;
+  const initialMax = Number(searchParams.get('max')) || 1000000;
+  const [priceRange, setPriceRange] = useState([initialMin, initialMax]);
 
   const inventories = [
     { id: 'workstations', name: 'Workstations', icon: <Monitor className="w-5 h-5" />, color: 'text-blue-400' },
     { id: 'flagships', name: 'Flagships', icon: <Smartphone className="w-5 h-5" />, color: 'text-purple-400' },
     { id: 'components', name: 'Components', icon: <Cpu className="w-5 h-5" />, color: 'text-emerald-400' },
   ];
+
+  // Debounced URL Update
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (priceRange[0] > 0) params.set('min', priceRange[0].toString());
+      else params.delete('min');
+      
+      if (priceRange[1] < 1000000) params.set('max', priceRange[1].toString());
+      else params.delete('max');
+
+      router.push(`/products?${params.toString()}`, { scroll: false });
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [priceRange, searchParams, router]);
+
+  const handlePriceChange = (val: number[]) => {
+    setPriceRange(val);
+  };
+
+  const handlePriceReset = () => {
+    setPriceRange([0, 1000000]);
+  };
 
   const activeInv = inventories.find(i => i.id === currentInventory);
   const relevantCategories = categories?.filter(c => c.inventory_type === currentInventory && !c.parent_id) || [];
@@ -129,7 +157,7 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
             Price Range
           </h3>
           <button 
-            onClick={() => setPriceRange([0, 500000])}
+            onClick={() => handlePriceReset()}
             className="text-[9px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors"
           >
             Reset
@@ -140,18 +168,18 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
           <div className="px-2">
             <Slider 
               value={priceRange} 
-              max={500000} 
-              step={1000} 
+              max={1000000} 
+              step={5000} 
               className={cn(
                 "w-full",
-                // Track styling
-                "[&_[data-slot=slider-track]]:bg-slate-800",
-                // Range indicator styling
-                "[&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-range]]:shadow-[0_0_10px_rgba(59,130,246,0.3)]",
-                // Thumb styling
-                "[&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:border-primary [&_[data-slot=slider-thumb]]:shadow-[0_0_15px_rgba(59,130,246,0.6)] [&_[data-slot=slider-thumb]]:size-4"
+                // Track
+                "[&_[data-slot=slider-track]]:bg-slate-800 [&_[data-slot=slider-track]]:h-1.5",
+                // Range (The Line)
+                "[&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-range]]:shadow-[0_0_15px_rgba(59,130,246,0.6)]",
+                // Thumbs
+                "[&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-primary [&_[data-slot=slider-thumb]]:shadow-[0_0_20px_rgba(59,130,246,0.8)] [&_[data-slot=slider-thumb]]:size-5"
               )}
-              onValueChange={(val) => setPriceRange(val as number[])}
+              onValueChange={handlePriceChange}
             />
           </div>
           
@@ -177,9 +205,11 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
             </div>
           </div>
 
-          <button className="w-full py-4 rounded-2xl bg-primary/10 border border-primary/20 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all active:scale-95">
-            Apply Filter
-          </button>
+          <div className="text-center">
+            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest animate-pulse">
+              Filtering in real-time...
+            </p>
+          </div>
         </div>
       </div>
 

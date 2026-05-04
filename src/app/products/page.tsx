@@ -18,6 +18,8 @@ export default async function ProductsPage(props: {
   const category = resolvedSearchParams.category;
   const sort = resolvedSearchParams.sort || 'latest';
   const inventory = resolvedSearchParams.inventory;
+  const min = resolvedSearchParams.min ? Number(resolvedSearchParams.min) : undefined;
+  const max = resolvedSearchParams.max ? Number(resolvedSearchParams.max) : undefined;
   
   const supabase = await createClient();
   const { data: categories } = await supabase.from('categories').select('*').order('name');
@@ -40,6 +42,13 @@ export default async function ProductsPage(props: {
     } else {
       query = query.eq('category', category);
     }
+  }
+
+  if (min !== undefined) {
+    query = query.gte('price', min);
+  }
+  if (max !== undefined) {
+    query = query.lte('price', max);
   }
 
   if (sort === 'price-low') query = query.order('price', { ascending: true });
