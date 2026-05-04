@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Edit, Trash2, Package, Monitor, Smartphone, Cpu } from 'lucide-react';
 import Link from 'next/link';
-import { deleteProduct } from '../products/actions';
+import { deleteProduct } from '@/app/tarusha/dashboard/products/actions';
 
 interface InventorySectionProps {
   type: 'workstations' | 'flagships' | 'components';
