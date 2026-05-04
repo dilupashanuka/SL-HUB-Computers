@@ -36,7 +36,7 @@ export default async function HeroShowcasePage() {
                 <Label className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Main Heading</Label>
                 <Input 
                   name="title" 
-                  defaultValue={settings?.hero_title}
+                  defaultValue={settings?.hero_title || "SL HUB COMPUTER"}
                   className="bg-white/5 border-white/10 text-white h-12 text-lg font-black tracking-tight"
                 />
               </div>
@@ -44,7 +44,7 @@ export default async function HeroShowcasePage() {
                 <Label className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Sub Heading</Label>
                 <Textarea 
                   name="subtitle" 
-                  defaultValue={settings?.hero_subtitle}
+                  defaultValue={settings?.hero_subtitle || "The New Experience of Technology"}
                   className="bg-white/5 border-white/10 text-white min-h-[100px] resize-none"
                 />
               </div>
