@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ChevronDown, Filter, RotateCcw, ShieldCheck } from "lucide-react";
+import { ChevronDown, Filter, RotateCcw, ShieldCheck, ArrowLeft, LayoutGrid, Cpu, Smartphone, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 
@@ -18,101 +18,105 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
   const [priceRange, setPriceRange] = useState([0, 500000]);
 
   const inventories = [
-    { id: 'workstations', name: 'Workstations', icon: '💻' },
-    { id: 'flagships', name: 'Flagships', icon: '📱' },
-    { id: 'components', name: 'Components', icon: '🛠️' },
+    { id: 'workstations', name: 'Workstations', icon: <Monitor className="w-5 h-5" />, color: 'text-blue-400' },
+    { id: 'flagships', name: 'Flagships', icon: <Smartphone className="w-5 h-5" />, color: 'text-purple-400' },
+    { id: 'components', name: 'Components', icon: <Cpu className="w-5 h-5" />, color: 'text-emerald-400' },
   ];
+
+  const activeInv = inventories.find(i => i.id === currentInventory);
+  const relevantCategories = categories?.filter(c => c.inventory_type === currentInventory && !c.parent_id) || [];
 
   return (
     <div className="space-y-10 sticky top-32">
-      {/* Inventory Selection */}
+      {/* Dynamic Header / Navigation */}
       <div className="space-y-6">
-        <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em] flex items-center gap-2">
-          <Filter className="w-3 h-3" />
-          Main Inventories
-        </h3>
-        <div className="grid gap-3">
-          <Link
-            href="/products"
-            scroll={false}
-            className={cn(
-              "flex items-center justify-between p-4 rounded-2xl border transition-all group",
-              !currentCategory && !currentInventory
-                ? "bg-primary/10 border-primary/20 text-white shadow-[0_0_20px_rgba(59,130,246,0.15)]"
-                : "bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:text-white"
-            )}
-          >
-            <span className="text-sm font-bold uppercase tracking-widest">All Inventory</span>
-          </Link>
+        {!currentInventory ? (
+          <>
+            <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em] flex items-center gap-2 px-2">
+              <LayoutGrid className="w-3 h-3" />
+              Select Inventory
+            </h3>
+            <div className="grid gap-3">
+              <Link
+                href="/products"
+                scroll={false}
+                className={cn(
+                  "flex items-center justify-between p-5 rounded-2xl border transition-all group",
+                  !currentCategory 
+                    ? "bg-primary/10 border-primary/20 text-white shadow-[0_0_20px_rgba(59,130,246,0.15)]"
+                    : "bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:text-white"
+                )}
+              >
+                <span className="text-xs font-black uppercase tracking-widest">Browse All</span>
+              </Link>
 
-          {inventories.map((inv) => {
-            const invCats = categories?.filter(c => c.inventory_type === inv.id && !c.parent_id) || [];
-            
-            return (
-              <div key={inv.id} className="space-y-3">
+              {inventories.map((inv) => (
                 <Link
+                  key={inv.id}
                   href={`/products?inventory=${inv.id}`}
                   scroll={false}
+                  className="flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/5 text-slate-400 hover:border-white/10 hover:text-white transition-all group"
+                >
+                  <div className={cn("w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center transition-all group-hover:scale-110", inv.color)}>
+                    {inv.icon}
+                  </div>
+                  <span className="text-xs font-black uppercase tracking-widest">{inv.name}</span>
+                </Link>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="animate-in slide-in-from-left-4 duration-500">
+            <Link 
+              href="/products" 
+              scroll={false}
+              className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-primary transition-colors mb-6 group px-2"
+            >
+              <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" />
+              Back to Inventories
+            </Link>
+            
+            <div className="p-6 rounded-[2.5rem] glass border-white/5 mb-8">
+              <div className={cn("w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4", activeInv?.color)}>
+                {activeInv?.icon}
+              </div>
+              <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-1">{activeInv?.name}</h3>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Filter by Brand</p>
+            </div>
+
+            <div className="grid gap-2">
+              <Link
+                href={`/products?inventory=${currentInventory}`}
+                scroll={false}
+                className={cn(
+                  "p-4 px-6 rounded-2xl border transition-all text-xs font-black uppercase tracking-widest",
+                  !currentCategory 
+                    ? "bg-primary/10 border-primary/20 text-white shadow-lg shadow-primary/10"
+                    : "bg-white/5 border-white/5 text-slate-500 hover:text-white hover:border-white/10"
+                )}
+              >
+                All {activeInv?.name}
+              </Link>
+              
+              {relevantCategories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/products?category=${cat.slug}&inventory=${currentInventory}`}
+                  scroll={false}
                   className={cn(
-                    "flex items-center justify-between p-4 rounded-2xl border transition-all group",
-                    currentInventory === inv.id
-                      ? "bg-primary/10 border-primary/20 text-white shadow-[0_0_15px_rgba(59,130,246,0.1)]"
-                      : "bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:text-white"
+                    "p-4 px-6 rounded-2xl border transition-all text-xs font-black uppercase tracking-widest flex items-center justify-between group",
+                    currentCategory === cat.slug 
+                      ? "bg-white/10 border-white/20 text-white"
+                      : "bg-white/5 border-white/5 text-slate-500 hover:text-white hover:border-white/10"
                   )}
                 >
-                  <span className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-                    <span className="text-lg">{inv.icon}</span> {inv.name}
-                  </span>
+                  {cat.name}
+                  <div className={cn("w-1.5 h-1.5 rounded-full transition-all", currentCategory === cat.slug ? "bg-primary scale-100 shadow-[0_0_10px_rgba(59,130,246,0.5)]" : "bg-transparent scale-0")} />
                 </Link>
-                
-                <div className="pl-4 grid gap-2">
-                  {invCats.map((cat) => {
-                    const children = categories?.filter(c => c.parent_id === cat.id) || [];
-                    const isActive = currentCategory === cat.slug || children.some(c => c.slug === currentCategory);
-                    
-                    return (
-                      <div key={cat.id} className="space-y-1">
-                        <Link
-                          href={`/products?category=${cat.slug}`}
-                          scroll={false}
-                          className={cn(
-    "flex items-center justify-between p-3 px-4 rounded-xl border transition-all text-[11px] font-bold uppercase tracking-widest",
-                            isActive
-                              ? "bg-primary/10 border-primary/20 text-white"
-                              : "bg-white/5 border-white/5 text-slate-500 hover:text-white hover:border-white/10"
-                          )}
-                        >
-                          {cat.name}
-                          {children.length > 0 && <ChevronDown className={cn("w-3 h-3 transition-transform", isActive ? "rotate-180" : "")} />}
-                        </Link>
-                        
-                        {isActive && children.length > 0 && (
-                          <div className="pl-4 grid gap-1 animate-in slide-in-from-top-2 duration-300">
-                            {children.map(child => (
-                              <Link
-                                key={child.id}
-                                href={`/products?category=${child.slug}`}
-                                scroll={false}
-                                className={cn(
-                                  "p-2 px-4 rounded-lg text-[10px] font-bold uppercase tracking-tighter transition-all border",
-                                  currentCategory === child.slug
-                                    ? "bg-blue-600/20 border-blue-600/30 text-blue-400"
-                                    : "bg-transparent border-transparent text-slate-600 hover:text-slate-400"
-                                )}
-                              >
-                                {child.name}
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Price Range Section */}
@@ -143,8 +147,8 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
       <div className="space-y-6">
         <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Quick Actions</h3>
         <div className="grid gap-3">
-          <Link href="/products" className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-white/5 border border-white/5 text-slate-400 hover:text-white transition-all text-xs font-black uppercase tracking-widest">
-            <RotateCcw className="w-4 h-4" />
+          <Link href="/products" scroll={false} className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-white/5 border border-white/5 text-slate-400 hover:text-white transition-all text-xs font-black uppercase tracking-widest group">
+            <RotateCcw className="w-4 h-4 transition-transform group-hover:rotate-180 duration-500" />
             Reset All Filters
           </Link>
           <div className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/20 to-transparent border border-primary/20">
@@ -159,4 +163,3 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
     </div>
   );
 }
-
