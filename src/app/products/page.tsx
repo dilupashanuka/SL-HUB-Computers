@@ -13,7 +13,14 @@ import { CategoryNavigator } from '@/components/shop/CategoryNavigator';
 export const revalidate = 0;
 
 export default async function ProductsPage(props: {
-  searchParams: Promise<{ category?: string; sort?: string; inventory?: string }>;
+  searchParams: Promise<{ 
+    category?: string; 
+    sort?: string; 
+    inventory?: string;
+    min?: string;
+    max?: string;
+    [key: string]: string | undefined;
+  }>;
 }) {
   const resolvedSearchParams = await props.searchParams;
   const category = resolvedSearchParams.category;
