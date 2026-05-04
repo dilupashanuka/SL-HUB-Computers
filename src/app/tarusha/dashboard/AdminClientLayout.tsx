@@ -62,6 +62,7 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
         { label: 'FLAGSHIPS', href: '/tarusha/dashboard/flagships', icon: Smartphone },
         { label: 'WORKSTATIONS', href: '/tarusha/dashboard/computers', icon: Monitor },
         { label: 'COMPONENTS', href: '/tarusha/dashboard/components', icon: Cpu },
+        { label: 'PC BUILDS', href: '/tarusha/dashboard/pc-builds', icon: Cpu },
         { label: 'CATEGORIES', href: '/tarusha/dashboard/categories', icon: Grid },
         { label: 'INVENTORY HEADER', href: '/tarusha/dashboard/inventory-header', icon: FileText },
       ]
