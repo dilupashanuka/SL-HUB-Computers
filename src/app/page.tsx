@@ -350,7 +350,7 @@ export default async function Home() {
           <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter">Need Immediate Help?</h2>
           <div className="flex flex-col md:flex-row justify-center items-center gap-6">
             <Link 
-              href="https://wa.me/94710678944" 
+              href={`https://wa.me/${(settingsData?.whatsapp_number || '94710678944').replace(/[^0-9]/g, '')}`}
               className="h-16 px-10 glass border-primary/20 text-primary font-black uppercase tracking-widest rounded-full flex items-center gap-3 hover:bg-primary hover:text-white transition-all"
             >
               <MessageCircle className="w-5 h-5" />
@@ -358,10 +358,10 @@ export default async function Home() {
             </Link>
             <div className="text-slate-500 font-black uppercase tracking-widest text-xs">Or</div>
             <Link 
-              href="tel:0710678944" 
+              href={`tel:${(settingsData?.phone_number || '0710678944').replace(/\s/g, '')}`}
               className="h-16 px-10 glass border-white/10 text-white font-black uppercase tracking-widest rounded-full flex items-center gap-3 hover:bg-white hover:text-slate-950 transition-all"
             >
-              Call Us: 071 067 8944
+              Call Us: {settingsData?.phone_number || '071 067 8944'}
             </Link>
           </div>
         </div>

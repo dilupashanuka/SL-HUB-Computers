@@ -27,6 +27,8 @@ interface NavbarProps {
   settings?: {
     site_name: string;
     logo_url?: string;
+    whatsapp_number?: string;
+    phone_number?: string;
   }
 }
 
@@ -154,7 +156,7 @@ export function Navbar({ settings }: NavbarProps) {
           </Link>
 
           <Link 
-            href="https://wa.me/94710678944" 
+            href={`https://wa.me/${(settings?.whatsapp_number || '94710678944').replace(/[^0-9]/g, '')}`}
             target="_blank"
             className={cn(
               buttonVariants({ variant: "default" }), 
@@ -261,7 +263,7 @@ export function Navbar({ settings }: NavbarProps) {
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] px-2">Support & Contact</span>
               <div className="grid gap-3">
                  <Link 
-                  href="https://wa.me/94710678944" 
+                  href={`https://wa.me/${(settings?.whatsapp_number || '94710678944').replace(/[^0-9]/g, '')}`}
                   target="_blank"
                   className="h-20 w-full bg-[#25D366] flex items-center justify-between px-8 text-white font-black uppercase tracking-widest rounded-[2rem] shadow-xl shadow-green-500/20 active:scale-[0.98] transition-all"
                 >
