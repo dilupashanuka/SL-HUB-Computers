@@ -34,6 +34,7 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
         <div className="grid gap-3">
           <Link
             href="/products"
+            scroll={false}
             className={cn(
               "flex items-center justify-between p-4 rounded-2xl border transition-all group",
               !currentCategory && !currentInventory
@@ -51,6 +52,7 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
               <div key={inv.id} className="space-y-3">
                 <Link
                   href={`/products?inventory=${inv.id}`}
+                  scroll={false}
                   className={cn(
                     "flex items-center justify-between p-4 rounded-2xl border transition-all group",
                     currentInventory === inv.id
@@ -72,8 +74,9 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
                       <div key={cat.id} className="space-y-1">
                         <Link
                           href={`/products?category=${cat.slug}`}
+                          scroll={false}
                           className={cn(
-                            "flex items-center justify-between p-3 px-4 rounded-xl border transition-all text-[11px] font-bold uppercase tracking-widest",
+    "flex items-center justify-between p-3 px-4 rounded-xl border transition-all text-[11px] font-bold uppercase tracking-widest",
                             isActive
                               ? "bg-primary/10 border-primary/20 text-white"
                               : "bg-white/5 border-white/5 text-slate-500 hover:text-white hover:border-white/10"
@@ -89,6 +92,7 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
                               <Link
                                 key={child.id}
                                 href={`/products?category=${child.slug}`}
+                                scroll={false}
                                 className={cn(
                                   "p-2 px-4 rounded-lg text-[10px] font-bold uppercase tracking-tighter transition-all border",
                                   currentCategory === child.slug

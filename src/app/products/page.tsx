@@ -7,6 +7,7 @@ import { MobileFilter } from '@/components/shop/MobileFilter';
 import { SortDropdown } from '@/components/shop/SortDropdown';
 
 import { InventoryHeader } from '@/components/shop/InventoryHeader';
+import { ProductGridClient } from '@/components/shop/ProductGridClient';
 
 export const revalidate = 0;
 
@@ -87,23 +88,7 @@ export default async function ProductsPage(props: {
 
           {/* Product Grid */}
           <div className="flex-1">
-            {!mappedProducts || mappedProducts.length === 0 ? (
-              <div className="text-center py-40 glass rounded-[3.5rem] border border-dashed border-white/10">
-                <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-8">
-                  <ShoppingCart className="w-10 h-10 text-slate-700" />
-                </div>
-                <h3 className="text-3xl font-black text-white mb-4 italic">No items found in this section</h3>
-                <p className="text-slate-400 font-medium text-lg max-w-sm mx-auto">
-                  Try adjusting your filters or check back later as we update our stock daily.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                {mappedProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            )}
+            <ProductGridClient products={mappedProducts} />
 
             {/* Pagination Placeholder */}
             {products && products.length > 0 && (
