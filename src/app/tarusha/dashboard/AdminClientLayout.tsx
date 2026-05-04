@@ -54,21 +54,21 @@ export function AdminClientLayout({ user, children }: AdminClientLayoutProps) {
       ]
     },
     {
-      label: 'SITE SETTINGS',
-      items: [
-        { label: 'TECH REELS', href: '/tarusha/dashboard/reels', icon: Play },
-        { label: 'FAQ MANAGER', href: '/tarusha/dashboard/faq', icon: HelpCircle },
-        { label: 'SITE CONTENT', href: '/tarusha/dashboard/content', icon: FileText },
-        { label: 'SITE CONFIG', href: '/tarusha/dashboard/settings', icon: Settings },
-      ]
-    },
-    {
       label: 'INVENTORY & STORE',
       items: [
         { label: 'PRODUCTS', href: '/tarusha/dashboard/products', icon: Package },
         { label: 'INVENTORY HEADER', href: '/tarusha/dashboard/inventory-header', icon: FileText },
         { label: 'ACCESSORIES', href: '/tarusha/dashboard/products?category=accessories', icon: Package },
         { label: 'CATEGORIES', href: '/tarusha/dashboard/categories', icon: Grid },
+      ]
+    },
+    {
+      label: 'SITE SETTINGS',
+      items: [
+        { label: 'TECH REELS', href: '/tarusha/dashboard/reels', icon: Play },
+        { label: 'FAQ MANAGER', href: '/tarusha/dashboard/faq', icon: HelpCircle },
+        { label: 'SITE CONTENT', href: '/tarusha/dashboard/content', icon: FileText },
+        { label: 'SITE CONFIG', href: '/tarusha/dashboard/settings', icon: Settings },
       ]
     },
     {
