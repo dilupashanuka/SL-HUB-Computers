@@ -12,8 +12,19 @@ const inter = Inter({ subsets: ["latin"], variable: '--font-sans' });
 const outfit = Outfit({ subsets: ["latin"], variable: '--font-heading' });
 
 export const metadata: Metadata = {
-  title: "SL HUB COMPUTER | The New Experience of Technology",
-  description: "High-quality branded and used computers, monitors, mobile phones, and accessories in Deiyandara, Sri Lanka.",
+  title: {
+    template: '%s | SL HUB COMPUTER',
+    default: 'SL HUB COMPUTER | The New Experience of Technology',
+  },
+  description: "Your ultimate destination for high-quality computers, laptops, gaming PCs, and tech accessories in Deiyandara, Sri Lanka.",
+  keywords: "computer shop Sri Lanka, laptops Deiyandara, gaming PCs, custom builds, SL HUB COMPUTER, tech retail",
+  openGraph: {
+    title: 'SL HUB COMPUTER',
+    description: 'The New Experience of Technology in Deiyandara, Sri Lanka.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'SL HUB COMPUTER',
+  },
 };
 
 import { createClient } from "@/utils/supabase/server";

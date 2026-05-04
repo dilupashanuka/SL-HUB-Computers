@@ -10,6 +10,14 @@ import { InventoryHeader } from '@/components/shop/InventoryHeader';
 import { ProductGridClient } from '@/components/shop/ProductGridClient';
 import { CategoryNavigator } from '@/components/shop/CategoryNavigator';
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Store Inventory | SL HUB COMPUTER',
+  description: 'Browse our extensive inventory of high-quality laptops, desktops, computer accessories, and networking gear.',
+  keywords: 'buy computers Sri Lanka, laptops Deiyandara, PC components, tech store',
+};
+
 export const revalidate = 0;
 
 const PAGE_SIZE = 12;

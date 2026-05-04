@@ -2,6 +2,13 @@ import { MapPin, Phone, Mail, Clock, MessageCircle, Sparkles, Send, Globe } from
 import { Button, buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Contact Us | SL HUB COMPUTER',
+  description: 'Get in touch with SL HUB COMPUTER. Find our store in Deiyandara, or contact us directly via phone or WhatsApp for instant support and technical advice.',
+  keywords: 'contact SL HUB, computer shop Deiyandara contact, tech support Sri Lanka',
+};
 
 export default function ContactPage() {
   return (
@@ -63,9 +70,9 @@ export default function ContactPage() {
                 </p>
                 <Link 
                   href="https://wa.me/94710678944" 
-                  className="h-20 px-12 bg-white text-green-700 font-black uppercase tracking-widest rounded-full flex items-center justify-center gap-4 hover:bg-green-50 transition-all text-lg shadow-2xl"
+                  className="h-16 px-8 md:h-20 md:px-12 bg-white text-green-700 font-black uppercase tracking-widest rounded-full flex items-center justify-center gap-3 md:gap-4 hover:bg-green-50 transition-all text-base md:text-lg shadow-2xl w-full sm:w-auto"
                 >
-                  <MessageCircle className="w-6 h-6" />
+                  <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
                   Chat Now
                 </Link>
               </div>

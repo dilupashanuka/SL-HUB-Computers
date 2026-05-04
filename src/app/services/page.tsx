@@ -4,6 +4,14 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Services | SL HUB COMPUTER',
+  description: 'Professional tech services in Deiyandara including CCTV installation, hardware repairs, custom PC building, and network infrastructure setup.',
+  keywords: 'computer repair, CCTV Sri Lanka, PC building, IT support, Deiyandara',
+};
+
 export const revalidate = 0;
 
 export default async function ServicesPage() {
@@ -99,9 +107,9 @@ export default async function ServicesPage() {
             </div>
             <Link 
               href="https://wa.me/94710678944" 
-              className="h-20 px-12 bg-white text-blue-600 font-black uppercase tracking-[0.2em] rounded-full text-lg shadow-2xl flex items-center gap-3 hover:bg-blue-50 transition-all"
+              className="h-16 px-8 md:h-20 md:px-12 bg-white text-blue-600 font-black uppercase tracking-[0.2em] rounded-full text-base md:text-lg shadow-2xl flex items-center gap-3 hover:bg-blue-50 transition-all justify-center w-full md:w-auto"
             >
-              <MessageCircle className="w-6 h-6" />
+              <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
               Chat with Expert
             </Link>
           </div>

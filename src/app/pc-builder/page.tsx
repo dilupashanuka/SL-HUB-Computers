@@ -2,6 +2,13 @@ import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { PCBuilderClient } from '@/components/shop/PCBuilderClient';
 import { Cpu } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'PC Builder & Pre-built PCs | SL HUB COMPUTER',
+  description: 'Design your dream custom PC with our advanced PC Builder or choose from our professionally assembled premium pre-built systems.',
+  keywords: 'custom PC build Sri Lanka, prebuilt gaming PC, PC builder Deiyandara',
+};
 
 export const revalidate = 0;
 

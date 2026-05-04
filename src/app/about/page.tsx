@@ -3,6 +3,13 @@ import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ShieldCheck, Trophy, Target, Heart, Sparkles, ChevronRight, MessageCircle } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Our Story | SL HUB COMPUTER',
+  description: 'Learn about the legacy of SL HUB COMPUTER. Since our inception in Deiyandara, we have been providing premium computers and tech accessories with quality without compromise.',
+  keywords: 'SL HUB story, about SL HUB COMPUTER, computer shop Deiyandara, tech retail Sri Lanka',
+};
 
 export default function AboutPage() {
   return (
@@ -39,8 +46,8 @@ export default function AboutPage() {
               className="object-cover opacity-60 transition-transform duration-1000 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
-            <div className="absolute bottom-12 left-12 right-12 p-8 glass rounded-[2.5rem] border-white/10">
-              <p className="text-white font-black italic text-lg leading-snug">
+            <div className="absolute bottom-6 left-6 right-6 p-6 md:bottom-12 md:left-12 md:right-12 md:p-8 glass rounded-[2rem] md:rounded-[2.5rem] border-white/10">
+              <p className="text-white font-black italic text-base md:text-lg leading-snug">
                 "We don't just sell computers; we build the tools that empower your dreams."
               </p>
             </div>
@@ -92,17 +99,17 @@ export default function AboutPage() {
         {/* Call to Action */}
         <section className="text-center space-y-12">
           <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">Ready to upgrade?</h2>
-          <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full">
             <Link 
               href="https://wa.me/94710678944" 
-              className="h-20 px-12 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-full flex items-center gap-4 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)] transition-all"
+              className="h-16 px-8 md:h-20 md:px-12 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-full flex items-center justify-center gap-3 md:gap-4 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)] transition-all w-full sm:w-auto text-sm md:text-base"
             >
-              <MessageCircle className="w-6 h-6" />
+              <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
               Chat with an Expert
             </Link>
             <Link 
               href="/contact" 
-              className="h-20 px-12 glass border-white/10 text-white font-black uppercase tracking-widest rounded-full flex items-center hover:bg-white/5 transition-all"
+              className="h-16 px-8 md:h-20 md:px-12 glass border-white/10 text-white font-black uppercase tracking-widest rounded-full flex items-center justify-center hover:bg-white/5 transition-all w-full sm:w-auto text-sm md:text-base"
             >
               Visit Our Store
             </Link>

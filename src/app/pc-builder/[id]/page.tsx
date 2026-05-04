@@ -14,7 +14,24 @@ const CAT_STYLES: Record<string, { border: string; text: string; bg: string; lab
   streaming:   { border: 'border-yellow-500/30', text: 'text-yellow-400', bg: 'bg-yellow-500/10', label: '📡 Streaming' },
 };
 
-export default async function PreBuildDetailPage({ params }: { params: Promise<{ id: string }> }) {
+import { Metadata } from 'next';
+
+type Props = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: build } = await supabase.from('pc_builds').select('name, description').eq('id', id).single();
+  
+  if (!build) return { title: 'Build Not Found | SL HUB COMPUTER' };
+  
+  return {
+    title: `${build.name} | SL HUB COMPUTER PC Builder`,
+    description: build.description || `Explore the ${build.name} custom PC build from SL HUB COMPUTER.`,
+  };
+}
+
+export default async function PreBuildDetailPage({ params }: Props) {
   const { id } = await params;
   const supabase = await createClient();
 
