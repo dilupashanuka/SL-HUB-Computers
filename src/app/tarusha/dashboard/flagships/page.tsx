@@ -1,11 +1,15 @@
 import { InventorySection } from "@/components/admin/InventorySection";
 
-export default function FlagshipsPage() {
+export default async function FlagshipsPage(props: {
+  searchParams: Promise<{ search?: string; page?: string }>;
+}) {
+  const searchParams = await props.searchParams;
   return (
     <InventorySection 
       type="flagships" 
       title="Flagships" 
-      description="Manage your inventory of high-end smartphones and tablets." 
+      description="Manage premium smartphones and flagship devices." 
+      searchParams={searchParams}
     />
   );
 }

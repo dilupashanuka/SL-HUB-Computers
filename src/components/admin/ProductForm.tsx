@@ -1,15 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Package, Plus, Trash2, Cpu, Smartphone, Monitor, HardDrive } from "lucide-react";
+import { Package, Plus, Trash2, Cpu, Smartphone, Monitor, HardDrive, Check, X } from "lucide-react";
 import { AdminMediaUpload } from "@/components/admin/AdminMediaUpload";
-import { createProduct, updateProduct } from "@/app/tarusha/dashboard/products/actions";
+import { createProduct, updateProduct, addQuickCategory } from "@/app/tarusha/dashboard/products/actions";
 
 interface Specification {
   key: string;
@@ -22,9 +22,15 @@ interface ProductFormProps {
   fixedInventoryType?: string;
 }
 
-export function ProductForm({ initialData, categories, fixedInventoryType }: ProductFormProps) {
+export function ProductForm({ initialData, categories: initialCategories, fixedInventoryType }: ProductFormProps) {
   const [inventoryType, setInventoryType] = useState(fixedInventoryType || initialData?.inventory_type || "");
   const [specs, setSpecs] = useState<Specification[]>([]);
+  
+  const [categories, setCategories] = useState(initialCategories);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(initialData?.category_id || "");
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   // Initialize specs from initialData.specifications
   useEffect(() => {
@@ -74,7 +80,20 @@ export function ProductForm({ initialData, categories, fixedInventoryType }: Pro
     setSpecs(specs.filter((_, i) => i !== index));
   };
 
-  const filteredCategories = categories.filter(c => c.inventory_type === inventoryType);
+  const filteredCategories = categories.filter((c: any) => c.inventory_type === inventoryType);
+
+  const handleQuickAddCategory = () => {
+    if (!newCategoryName || !inventoryType) return;
+    startTransition(async () => {
+      const newCat = await addQuickCategory(newCategoryName, inventoryType);
+      if (newCat) {
+        setCategories([...categories, newCat]);
+        setSelectedCategoryId(newCat.id);
+        setNewCategoryName("");
+        setShowNewCategory(false);
+      }
+    });
+  };
 
   return (
     <form action={initialData ? updateProduct : createProduct} className="space-y-8">
@@ -119,26 +138,69 @@ export function ProductForm({ initialData, categories, fixedInventoryType }: Pro
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Category</Label>
-                  <select 
-                    name="category_id" 
-                    defaultValue={initialData?.category_id}
-                    required
-                    className="w-full bg-white/5 border border-white/10 text-white h-12 rounded-lg px-4 focus:outline-none focus:border-blue-500/50"
-                  >
-                    <option value="" disabled>Select Category</option>
-                    {filteredCategories.filter(c => !c.parent_id).map(parent => (
-                      <optgroup key={parent.id} label={parent.name} className="bg-slate-900">
-                        <option value={parent.id} className="bg-slate-900">{parent.name} (Main)</option>
-                        {filteredCategories.filter(c => c.parent_id === parent.id).map(child => (
-                          <option key={child.id} value={child.id} className="bg-slate-900 pl-4">
-                            ↳ {child.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Category</Label>
+                    {inventoryType && (
+                      <button 
+                        type="button" 
+                        onClick={() => setShowNewCategory(!showNewCategory)}
+                        className="text-[10px] text-primary hover:text-blue-400 font-bold uppercase tracking-wider"
+                      >
+                        {showNewCategory ? 'Cancel' : '+ New Category'}
+                      </button>
+                    )}
+                  </div>
+                  
+                  {showNewCategory ? (
+                    <div className="flex gap-2">
+                      <Input 
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder="New category name..."
+                        className="bg-white/5 border-white/10 text-white h-12 flex-1"
+                        autoFocus
+                      />
+                      <Button 
+                        type="button" 
+                        onClick={handleQuickAddCategory}
+                        disabled={isPending || !newCategoryName}
+                        className="h-12 w-12 bg-primary hover:bg-blue-600 text-white"
+                      >
+                        {isPending ? <Package className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                  ) : (
+                    <select 
+                      name="category_id" 
+                      value={selectedCategoryId}
+                      onChange={(e) => setSelectedCategoryId(e.target.value)}
+                      required
+                      className="w-full bg-white/5 border border-white/10 text-white h-12 rounded-lg px-4 focus:outline-none focus:border-blue-500/50"
+                    >
+                      <option value="" disabled>Select Category</option>
+                      {filteredCategories.filter((c: any) => !c.parent_id).map((parent: any) => (
+                        <optgroup key={parent.id} label={parent.name} className="bg-slate-900">
+                          <option value={parent.id} className="bg-slate-900">{parent.name} (Main)</option>
+                          {filteredCategories.filter((c: any) => c.parent_id === parent.id).map((child: any) => (
+                            <option key={child.id} value={child.id} className="bg-slate-900 pl-4">
+                              ↳ {child.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  )}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Description</Label>
+                <Textarea 
+                  name="description" 
+                  defaultValue={initialData?.description}
+                  placeholder="Detailed product description..." 
+                  className="bg-white/5 border-white/10 text-white min-h-[120px] resize-y"
+                />
               </div>
 
               <div className="grid md:grid-cols-3 gap-6">

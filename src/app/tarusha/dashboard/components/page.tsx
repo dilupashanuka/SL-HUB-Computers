@@ -1,11 +1,15 @@
 import { InventorySection } from "@/components/admin/InventorySection";
 
-export default function ComponentsPage() {
+export default async function ComponentsPage(props: {
+  searchParams: Promise<{ search?: string; page?: string }>;
+}) {
+  const searchParams = await props.searchParams;
   return (
     <InventorySection 
       type="components" 
       title="Components" 
-      description="Manage PC parts, accessories, and individual hardware components." 
+      description="Manage individual PC parts, peripherals, and accessories." 
+      searchParams={searchParams}
     />
   );
 }

@@ -174,3 +174,28 @@ export async function deleteProduct(formData: FormData) {
 
   revalidatePath('/tarusha/dashboard/products');
 }
+
+export async function addQuickCategory(name: string, inventory_type: string) {
+  const supabase = await createClient();
+  const slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+
+  const { data, error } = await supabase
+    .from('categories')
+    .insert([{ 
+      name, 
+      slug, 
+      inventory_type,
+      is_featured: false 
+    }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating category:', error);
+    return null;
+  }
+
+  revalidatePath('/tarusha/dashboard/categories');
+  revalidatePath('/tarusha/dashboard/products');
+  return data;
+}

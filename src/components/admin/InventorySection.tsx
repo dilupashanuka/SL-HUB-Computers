@@ -3,24 +3,41 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Edit, Trash2, Package, Monitor, Smartphone, Cpu } from 'lucide-react';
+import { Plus, Edit, Trash2, Package, Monitor, Smartphone, Cpu, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { deleteProduct } from '@/app/tarusha/dashboard/products/actions';
+import { AdminSearch } from '@/components/admin/AdminSearch';
+
+const PAGE_SIZE = 10;
 
 interface InventorySectionProps {
   type: 'workstations' | 'flagships' | 'components';
   title: string;
   description: string;
+  searchParams?: { search?: string; page?: string };
 }
 
-export async function InventorySection({ type, title, description }: InventorySectionProps) {
+export async function InventorySection({ type, title, description, searchParams }: InventorySectionProps) {
   const supabase = await createClient();
   
-  const { data: products } = await supabase
+  const search = searchParams?.search || '';
+  const page = searchParams?.page ? Number(searchParams.page) : 1;
+  const offset = (page - 1) * PAGE_SIZE;
+
+  let query = supabase
     .from('products')
-    .select('*, categories(name)')
+    .select('*, categories(name)', { count: 'exact' })
     .eq('inventory_type', type)
     .order('created_at', { ascending: false });
+
+  if (search) {
+    query = query.or(`title.ilike.%${search}%,brand.ilike.%${search}%`);
+  }
+
+  query = query.range(offset, offset + PAGE_SIZE - 1);
+
+  const { data: products, count: totalCount } = await query;
+  const totalPages = Math.ceil((totalCount || 0) / PAGE_SIZE);
 
   const Icon = type === 'workstations' ? Monitor : type === 'flagships' ? Smartphone : Cpu;
   const accentColor = type === 'workstations' ? 'text-blue-400' : type === 'flagships' ? 'text-purple-400' : 'text-emerald-400';
@@ -35,21 +52,27 @@ export async function InventorySection({ type, title, description }: InventorySe
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight text-white">{title}</h1>
           </div>
-          <p className="text-slate-400">{description} ({products?.length || 0} items)</p>
+          <p className="text-slate-400">{description} ({totalCount || 0} items)</p>
         </div>
-        <Link 
-          href={`/tarusha/dashboard/products/new?inventory=${type}`}
-          className={cn(buttonVariants(), "bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl h-12 px-6 shadow-lg shadow-blue-600/20")}
-        >
-          <Plus className="w-4 h-4 mr-2" /> Add {title.slice(0, -1)}
-        </Link>
+        <div className="flex gap-4 items-center">
+          <AdminSearch />
+          <Link 
+            href={`/tarusha/dashboard/products/new?inventory=${type}`}
+            className={cn(buttonVariants(), "bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl h-12 px-6 shadow-lg shadow-blue-600/20")}
+          >
+            <Plus className="w-4 h-4 mr-2" /> Add {title.slice(0, -1)}
+          </Link>
+        </div>
       </div>
 
       <Card className="bg-slate-900/40 border-white/5 backdrop-blur-md overflow-hidden">
-        <CardHeader className="border-b border-white/5 bg-white/5">
+        <CardHeader className="border-b border-white/5 bg-white/5 flex flex-row items-center justify-between py-4">
           <CardTitle className="text-white text-lg flex items-center gap-2">
             Active Stock List
           </CardTitle>
+          <div className="text-xs text-slate-400">
+            Showing {products?.length ? offset + 1 : 0} - {Math.min(offset + PAGE_SIZE, totalCount || 0)} of {totalCount}
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -127,6 +150,37 @@ export async function InventorySection({ type, title, description }: InventorySe
             </TableBody>
           </Table>
         </CardContent>
+        
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="border-t border-white/5 p-4 flex items-center justify-between bg-white/[0.02]">
+            <p className="text-xs text-slate-500 font-bold tracking-widest uppercase">
+              Page {page} of {totalPages}
+            </p>
+            <div className="flex gap-2">
+              <Link
+                href={`?${new URLSearchParams({ ...(searchParams as Record<string, string>), page: String(Math.max(1, page - 1)) }).toString()}`}
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "sm" }),
+                  "bg-white/5 border-white/10 text-white hover:bg-white/10",
+                  page === 1 && "opacity-50 pointer-events-none"
+                )}
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" /> Prev
+              </Link>
+              <Link
+                href={`?${new URLSearchParams({ ...(searchParams as Record<string, string>), page: String(Math.min(totalPages, page + 1)) }).toString()}`}
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "sm" }),
+                  "bg-white/5 border-white/10 text-white hover:bg-white/10",
+                  page === totalPages && "opacity-50 pointer-events-none"
+                )}
+              >
+                Next <ChevronRight className="w-4 h-4 ml-1" />
+              </Link>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );
