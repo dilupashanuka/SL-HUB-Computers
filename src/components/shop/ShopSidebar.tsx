@@ -57,9 +57,9 @@ export function ShopSidebar({ currentCategory, categories, availableSpecs }: Sho
     return () => clearTimeout(timer);
   }, [priceRange, searchParams, router]);
 
-  const handlePriceChange = (val: number | number[]) => {
+  const handlePriceChange = (val: number | readonly number[]) => {
     if (Array.isArray(val)) {
-      setPriceRange(val);
+      setPriceRange([...val]);
     }
   };
 
