@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { ChevronDown, Filter, RotateCcw, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
@@ -31,24 +32,24 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
           Main Inventories
         </h3>
         <div className="grid gap-3">
-          <a
+          <Link
             href="/products"
             className={cn(
               "flex items-center justify-between p-4 rounded-2xl border transition-all group",
-              !currentCategory 
+              !currentCategory && !currentInventory
                 ? "bg-primary/10 border-primary/20 text-white shadow-[0_0_20px_rgba(59,130,246,0.15)]"
                 : "bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:text-white"
             )}
           >
             <span className="text-sm font-bold uppercase tracking-widest">All Inventory</span>
-          </a>
+          </Link>
 
           {inventories.map((inv) => {
             const invCats = categories?.filter(c => c.inventory_type === inv.id && !c.parent_id) || [];
             
             return (
               <div key={inv.id} className="space-y-3">
-                <a
+                <Link
                   href={`/products?inventory=${inv.id}`}
                   className={cn(
                     "flex items-center justify-between p-4 rounded-2xl border transition-all group",
@@ -60,7 +61,7 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
                   <span className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
                     <span className="text-lg">{inv.icon}</span> {inv.name}
                   </span>
-                </a>
+                </Link>
                 
                 <div className="pl-4 grid gap-2">
                   {invCats.map((cat) => {
@@ -69,7 +70,7 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
                     
                     return (
                       <div key={cat.id} className="space-y-1">
-                        <a
+                        <Link
                           href={`/products?category=${cat.slug}`}
                           className={cn(
                             "flex items-center justify-between p-3 px-4 rounded-xl border transition-all text-[11px] font-bold uppercase tracking-widest",
@@ -80,12 +81,12 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
                         >
                           {cat.name}
                           {children.length > 0 && <ChevronDown className={cn("w-3 h-3 transition-transform", isActive ? "rotate-180" : "")} />}
-                        </a>
+                        </Link>
                         
                         {isActive && children.length > 0 && (
                           <div className="pl-4 grid gap-1 animate-in slide-in-from-top-2 duration-300">
                             {children.map(child => (
-                              <a
+                              <Link
                                 key={child.id}
                                 href={`/products?category=${child.slug}`}
                                 className={cn(
@@ -96,7 +97,7 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
                                 )}
                               >
                                 {child.name}
-                              </a>
+                              </Link>
                             ))}
                           </div>
                         )}
@@ -138,10 +139,10 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
       <div className="space-y-6">
         <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Quick Actions</h3>
         <div className="grid gap-3">
-          <button className="flex items-center gap-3 w-full p-4 rounded-2xl bg-white/5 border border-white/5 text-slate-400 hover:text-white transition-all text-xs font-black uppercase tracking-widest">
+          <Link href="/products" className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-white/5 border border-white/5 text-slate-400 hover:text-white transition-all text-xs font-black uppercase tracking-widest">
             <RotateCcw className="w-4 h-4" />
             Reset All Filters
-          </button>
+          </Link>
           <div className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/20 to-transparent border border-primary/20">
             <ShieldCheck className="w-8 h-8 text-primary mb-4" />
             <h4 className="text-white font-black text-sm uppercase tracking-widest mb-1">Genuine Gear</h4>
@@ -154,3 +155,4 @@ export function ShopSidebar({ currentCategory, categories }: ShopSidebarProps) {
     </div>
   );
 }
+
