@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Package, Plus, Trash2, Cpu, Smartphone, Monitor, HardDrive, Check, X } from "lucide-react";
 import { AdminMediaUpload } from "@/components/admin/AdminMediaUpload";
 import { createProduct, updateProduct, addQuickCategory } from "@/app/tarusha/dashboard/products/actions";
+import { ActionMessage } from "@/components/utils/ActionMessage";
 
 interface Specification {
   key: string;
@@ -31,6 +32,8 @@ export function ProductForm({ initialData, categories: initialCategories, fixedI
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [actionResult, setActionResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
 
   // Initialize specs from initialData.specifications
   useEffect(() => {
@@ -95,9 +98,41 @@ export function ProductForm({ initialData, categories: initialCategories, fixedI
     });
   };
 
+  const handleSubmit = async (formData: FormData) => {
+    setActionResult(null);
+    setFormErrors({});
+    
+    startTransition(async () => {
+      const action = initialData ? updateProduct : createProduct;
+      const result = await action(formData);
+      
+      if (result && 'success' in result) {
+        if (result.success) {
+          setActionResult({ success: true, message: result.message || 'කාර්යය සාර්ථකයි' });
+          // Clear form on success for new product
+          if (!initialData) {
+            const form = document.querySelector('form');
+            form?.reset();
+          }
+        } else {
+          setActionResult({ success: false, message: result.error || 'දෝෂයක් සිදුවිය' });
+        }
+      }
+    });
+  };
+
   return (
-    <form action={initialData ? updateProduct : createProduct} className="space-y-8">
+    <form action={handleSubmit} className="space-y-8">
       {initialData && <input type="hidden" name="id" value={initialData.id} />}
+      
+      {/* Action Messages */}
+      {actionResult && (
+        <ActionMessage 
+          type={actionResult.success ? 'success' : 'error'} 
+          message={actionResult.message}
+          onClose={() => setActionResult(null)}
+        />
+      )}
       
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -214,7 +249,7 @@ export function ProductForm({ initialData, categories: initialCategories, fixedI
                 </div>
                 <div className="space-y-2">
                   <Label className="text-slate-300 font-bold text-[11px] uppercase tracking-wider">Price (LKR)</Label>
-                  <Input name="price" type="number" defaultValue={initialData?.price} required className="bg-white/5 border-white/10 text-white h-12" />
+                  <Input name="price" type="number" step="0.01" defaultValue={initialData?.price} required className="bg-white/5 border-white/10 text-white h-12" />
                 </div>
               </div>
             </CardContent>
@@ -293,8 +328,19 @@ export function ProductForm({ initialData, categories: initialCategories, fixedI
                 <Switch name="in_stock" defaultChecked={initialData?.in_stock ?? true} />
               </div>
 
-              <Button type="submit" className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white font-black tracking-widest rounded-2xl shadow-xl shadow-blue-600/20 transition-all active:scale-95 uppercase">
-                {initialData ? "Update Product" : "Deploy to Store"}
+              <Button 
+                type="submit" 
+                disabled={isPending}
+                className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white font-black tracking-widest rounded-2xl shadow-xl shadow-blue-600/20 transition-all active:scale-95 uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isPending ? (
+                  <>
+                    <Package className="w-5 h-5 animate-spin" />
+                    සකසමින්...
+                  </>
+                ) : (
+                  initialData ? "Update Product" : "Deploy to Store"
+                )}
               </Button>
             </CardContent>
           </Card>
